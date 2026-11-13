@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ứng viên và hồ sơ CV · Mạch Việc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/recruitment-shell.css">
+<script src="../assets/recruitment-store.js"></script><script defer src="../assets/recruitment-shell.js"></script>
+<style>.tabs{display:flex;gap:7px;border-bottom:1px solid var(--line);margin-bottom:17px}.tab{border:0;border-bottom:2px solid transparent;background:none;color:var(--muted);padding:9px 13px;font-weight:600;cursor:pointer}.tab[aria-selected="true"]{border-color:var(--cobalt);color:var(--cobalt)}.application-card{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:16px}.application-card+.application-card{margin-top:10px}.application-card h3{font:600 16px var(--display);margin:0}.application-card p{margin:4px 0;color:var(--muted);font-size:12px}.application-card textarea{width:100%;min-height:55px;margin-top:8px}.application-actions{display:grid;align-content:start;gap:8px}.application-actions select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}.candidate-tools{display:grid;grid-template-columns:minmax(200px,1.5fr) repeat(2,minmax(160px,.8fr));gap:8px;margin-bottom:15px}.save-candidate{white-space:nowrap}.saved-mark{color:var(--amber);font-weight:700}.cv-hint{font-size:11px;color:var(--muted);margin:12px 0}.candidate-card .candidate-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px}.match-label{font-size:11px;color:var(--muted);margin-top:3px}@media(max-width:700px){.application-card{grid-template-columns:1fr}.application-actions{grid-template-columns:1fr 1fr}.candidate-tools{grid-template-columns:1fr}.tabs{overflow:auto}.tab{white-space:nowrap}}</style>
+</head>
+<body data-root="../" data-page="people">
+<div class="app"><div id="sidebar-root"></div><main class="main">
+  <header class="page-head"><div><p class="eyebrow" data-vi="Nguồn ứng viên" data-en="Candidate pipeline">Nguồn ứng viên</p><h1 data-vi="Ứng viên & hồ sơ CV" data-en="Candidates & CVs">Ứng viên &amp; hồ sơ CV</h1><p data-vi="Theo dõi hồ sơ nộp vào tin tuyển dụng và khám phá ứng viên phù hợp trong nguồn CV." data-en="Review applications for your job posts and discover suitable people in the CV pool.">Theo dõi hồ sơ nộp vào tin tuyển dụng và khám phá ứng viên phù hợp trong nguồn CV.</p></div></header>
+  <div class="tabs" role="tablist"><button class="tab" id="tab-apps" role="tab" aria-selected="true" data-view="applications"><span data-vi="Hồ sơ ứng tuyển" data-en="Applications">Hồ sơ ứng tuyển</span> <span id="application-count"></span></button><button class="tab" id="tab-search" role="tab" aria-selected="false" data-view="search"><span data-vi="Tìm CV" data-en="CV search">Tìm CV</span></button><button class="tab" id="tab-recommended" role="tab" aria-selected="false" data-view="recommended"><span data-vi="Đề xuất phù hợp" data-en="Recommended">Đề xuất phù hợp</span></button></div>
+  <section id="applications-view" role="tabpanel"><div class="filters"><select id="application-job"><option value="all" data-vi="Tất cả vị trí" data-en="All positions">Tất cả vị trí</option></select><select id="application-status"><option value="all" data-vi="Mọi trạng thái" data-en="All statuses">Mọi trạng thái</option><option value="new" data-vi="Mới nhận" data-en="New">Mới nhận</option><option value="reviewing" data-vi="Đang xem xét" data-en="In review">Đang xem xét</option><option value="shortlisted" data-vi="Qua sàng lọc" data-en="Shortlisted">Qua sàng lọc</option><option value="interview" data-vi="Phỏng vấn" data-en="Interview">Phỏng vấn</option><option value="accepted" data-vi="Đã nhận" data-en="Accepted">Đã nhận</option><option value="rejected" data-vi="Không phù hợp" data-en="Declined">Không phù hợp</option></select></div><div id="applications-list"></div></section>
+  <section id="search-view" role="tabpanel" hidden><div class="card" style="margin-bottom:15px"><h2 data-vi="Tìm ứng viên theo tiêu chí" data-en="Search candidates">Tìm ứng viên theo tiêu chí</h2><p class="sub" data-vi="Điểm phù hợp dựa trên kỹ năng, chức danh, địa điểm và số năm kinh nghiệm." data-en="Match score uses skills, role, location, and years of experience.">Điểm phù hợp dựa trên kỹ năng, chức danh, địa điểm và số năm kinh nghiệm.</p><div class="candidate-tools"><input class="input" id="candidate-query" type="search" placeholder="Tên, chức danh hoặc kỹ năng" data-placeholder-vi="Tên, chức danh hoặc kỹ năng" data-placeholder-en="Name, role, or skill"><select class="input" id="target-job"><option value="all" data-vi="Không gắn với vị trí" data-en="Any position">Không gắn với vị trí</option></select><select class="input" id="candidate-location"><option value="all" data-vi="Mọi địa điểm" data-en="Any location">Mọi địa điểm</option><option value="Hà Nội">Hà Nội</option><option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option><option value="Đà Nẵng">Đà Nẵng</option><option value="Làm việc từ xa" data-vi="Làm việc từ xa" data-en="Remote">Làm việc từ xa</option></select></div></div><div class="candidate-grid" id="candidate-results"></div><p class="cv-hint" data-vi="Hồ sơ hiển thị là dữ liệu minh họa. Dữ liệu liên hệ và tải CV cần được kết nối với nguồn ứng viên thật." data-en="These are sample profiles. Contact details and CV downloads require a connected candidate source.">Hồ sơ hiển thị là dữ liệu minh họa. Dữ liệu liên hệ và tải CV cần được kết nối với nguồn ứng viên thật.</p></section>
+  <section id="recommended-view" role="tabpanel" hidden><div class="card" style="margin-bottom:15px"><h2 data-vi="Ứng viên được đề xuất" data-en="Recommended candidates">Ứng viên được đề xuất</h2><p class="sub" data-vi="Chọn vị trí cần tuyển để xếp hạng hồ sơ theo mức độ tương thích." data-en="Choose an open role to rank profiles by fit.">Chọn vị trí cần tuyển để xếp hạng hồ sơ theo mức độ tương thích.</p><select class="input" id="recommend-job" style="max-width:420px"></select></div><div class="candidate-grid" id="recommend-results"></div></section>
+  <footer data-vi="Hồ sơ nộp vào tin được gắn với vị trí và trạng thái xử lý để báo cáo luôn đúng." data-en="Each application stays linked to its post and review status for accurate reporting.">Hồ sơ nộp vào tin được gắn với vị trí và trạng thái xử lý để báo cáo luôn đúng.</footer>
+</main></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const D = window.MachViec, UI = window.MachViecUI, $ = selector => document.querySelector(selector), tr = (vi, en) => D.getPrefs().language === 'en' ? en : vi;
+  const statusNames = { new: ['Mới nhận', 'New'], reviewing: ['Đang xem xét', 'In review'], shortlisted: ['Qua sàng lọc', 'Shortlisted'], interview: ['Phỏng vấn', 'Interview'], accepted: ['Đã nhận', 'Accepted'], rejected: ['Không phù hợp', 'Declined'] };
+  const jobById = id => D.getJobs().find(job => String(job.id) === String(id));
+  function fillJobs() {
+    const jobs = D.getJobs();
+    const jobOptions = jobs.map(job => '<option value="' + UI.escape(job.id) + '">' + UI.escape(job.title) + ' · ' + UI.escape(job.department) + '</option>').join('');
+    $('#application-job').insertAdjacentHTML('beforeend', jobOptions);
+    $('#target-job').insertAdjacentHTML('beforeend', jobOptions);
+    $('#recommend-job').innerHTML = jobs.filter(job => job.status === 'open').map(job => '<option value="' + UI.escape(job.id) + '">' + UI.escape(job.title) + ' · ' + UI.escape(job.department) + '</option>').join('') || '<option value="">' + tr('Chưa có tin đang tuyển', 'No open jobs') + '</option>';
+    const requested = new URLSearchParams(location.search).get('job');
+    if (requested && jobById(requested)) { $('#application-job').value = requested; showTab('applications'); }
+  }
+  function score(candidate, job) {
+    if (!job) return 0;
+    const wanted = [...new Set([...(job.skills || []), ...String(job.requirements || '').split(/[^\p{L}\p{N}+#.]+/u).filter(word => word.length > 2)])].map(x => x.toLocaleLowerCase());
+    const matched = candidate.skills.filter(skill => wanted.some(word => word.includes(skill.toLocaleLowerCase()) || skill.toLocaleLowerCase().includes(word)));
+    const skillScore = wanted.length ? Math.min(68, matched.length / Math.min(5, Math.max(1, job.skills.length)) * 68) : 42;
+    const roleScore = candidate.role.toLocaleLowerCase().includes(job.title.toLocaleLowerCase().split(' ')[0]) || job.title.toLocaleLowerCase().includes(candidate.role.toLocaleLowerCase().split(' ')[0]) ? 18 : 7;
+    const locationScore = job.location === candidate.location || job.location === 'Làm việc từ xa' || job.location === 'Linh hoạt / kết hợp' ? 9 : 3;
+    const experienceScore = candidate.experience >= 3 ? 5 : 2;
+    return Math.min(99, Math.round(skillScore + roleScore + locationScore + experienceScore));
+  }
+  function renderCandidates(container, candidates, job) {
+    const saved = D.getSavedCandidates();
+    const ranked = candidates.map(candidate => ({ candidate, score: score(candidate, job) })).sort((a, b) => b.score - a.score);
+    container.innerHTML = ranked.length ? ranked.map(({ candidate, score: match }) => '<article class="candidate-card"><div class="candidate-top"><div><h3>' + UI.escape(candidate.name) + '</h3><div class="job-meta">' + UI.escape(candidate.role) + ' · ' + candidate.experience + ' ' + tr('năm kinh nghiệm', 'years experience') + '</div><div class="match-label">' + UI.escape(candidate.location) + ' · ' + UI.escape(candidate.education) + '</div></div><div class="score" aria-label="' + match + '% ' + tr('phù hợp', 'match') + '">' + match + '%</div></div><p>' + UI.escape(candidate.summary) + '</p><div class="tag-list">' + candidate.skills.map(skill => '<span class="tag">' + UI.escape(skill) + '</span>').join('') + '</div><div class="candidate-bottom"><span class="muted" style="font-size:11px">' + tr('Cập nhật ', 'Updated ') + UI.escape(candidate.updated) + '</span><button class="btn secondary small save-candidate" data-candidate="' + UI.escape(candidate.id) + '">' + (saved.includes(candidate.id) ? '<span class="saved-mark">★</span> ' + tr('Đã lưu', 'Saved') : tr('+ Lưu hồ sơ', '+ Save profile')) + '</button></div></article>').join('') : '<div class="empty" style="grid-column:1/-1">' + tr('Không tìm thấy hồ sơ nào phù hợp với tiêu chí.', 'No profiles match these filters.') + '</div>';
+  }
+  function drawSearch() {
+    const query = $('#candidate-query').value.trim().toLocaleLowerCase(), location = $('#candidate-location').value, target = $('#target-job').value;
+    const job = target === 'all' ? null : jobById(target);
+    const filtered = D.getCandidates().filter(candidate => (!location || location === 'all' || candidate.location === location) && (!query || [candidate.name, candidate.role, candidate.skills.join(' '), candidate.summary].join(' ').toLocaleLowerCase().includes(query)));
+    renderCandidates($('#candidate-results'), filtered, job);
+  }
+  function drawRecommendations() {
+    const job = jobById($('#recommend-job').value);
+    renderCandidates($('#recommend-results'), D.getCandidates(), job);
+  }
+  function drawApplications() {
+    const all = D.getApplications(), jobFilter = $('#application-job').value, statusFilter = $('#application-status').value;
+    $('#application-count').textContent = '(' + all.length + ')';
+    const rows = all.filter(item => (jobFilter === 'all' || String(item.jobId) === jobFilter) && (statusFilter === 'all' || item.status === statusFilter));
+    $('#applications-list').innerHTML = rows.length ? rows.map(item => {
+      const job = jobById(item.jobId) || { title: tr('Vị trí không còn tồn tại', 'Job no longer available'), department: '' };
+      return '<article class="application-card" data-application="' + UI.escape(item.id) + '"><div><h3>' + UI.escape(item.name) + '</h3><p><b>' + UI.escape(job.title) + '</b> · ' + UI.escape(job.department) + '</p><p>' + UI.escape(item.email) + (item.phone ? ' · ' + UI.escape(item.phone) : '') + ' · ' + tr('Ứng tuyển ', 'Applied ') + new Date(item.appliedAt).toLocaleDateString(D.getPrefs().language === 'en' ? 'en-GB' : 'vi-VN') + '</p><p>' + tr('CV:', 'CV:') + ' ' + UI.escape(item.cvName || tr('Chưa đính kèm', 'Not attached')) + (item.note ? '<br>' + UI.escape(item.note) : '') + '</p><textarea class="form-control application-note" placeholder="' + tr('Ghi chú đánh giá riêng', 'Private review note') + '" data-placeholder-vi="Ghi chú đánh giá riêng" data-placeholder-en="Private review note">' + UI.escape(item.reviewNote || '') + '</textarea></div><div class="application-actions"><label class="muted" for="status-' + UI.escape(item.id) + '">' + tr('Trạng thái xử lý', 'Review status') + '</label><select id="status-' + UI.escape(item.id) + '" data-status>' + Object.entries(statusNames).map(([key, labels]) => '<option value="' + key + '"' + (item.status === key ? ' selected' : '') + '>' + tr(labels[0], labels[1]) + '</option>').join('') + '</select><span class="status ' + UI.escape(item.status) + '">' + tr(...statusNames[item.status]) + '</span></div></article>';
+    }).join('') : '<div class="card empty">' + tr('Chưa có hồ sơ ứng tuyển cho bộ lọc này. Khi ứng viên nộp hồ sơ cho tin đã đăng, hồ sơ sẽ xuất hiện tại đây.', 'No applications match these filters. Applications for your published jobs will appear here.') + '</div>';
+  }
+  function showTab(view) {
+    document.querySelectorAll('.tab').forEach(button => button.setAttribute('aria-selected', String(button.dataset.view === view)));
+    ['applications', 'search', 'recommended'].forEach(key => { document.getElementById(key + '-view').hidden = key !== view; });
+    if (view === 'applications') drawApplications(); if (view === 'search') drawSearch(); if (view === 'recommended') drawRecommendations();
+  }
+  document.querySelectorAll('.tab').forEach(button => button.addEventListener('click', () => showTab(button.dataset.view)));
+  $('#application-job').addEventListener('change', drawApplications); $('#application-status').addEventListener('change', drawApplications);
+  $('#candidate-query').addEventListener('input', drawSearch); $('#candidate-location').addEventListener('change', drawSearch); $('#target-job').addEventListener('change', drawSearch); $('#recommend-job').addEventListener('change', drawRecommendations);
+  document.addEventListener('click', event => { const button = event.target.closest('[data-candidate]'); if (!button) return; D.toggleCandidate(button.dataset.candidate); drawSearch(); drawRecommendations(); UI.notify(tr('Đã cập nhật danh sách hồ sơ đã lưu.', 'Saved profiles updated.')); });
+  $('#applications-list').addEventListener('change', event => { const card = event.target.closest('[data-application]'); if (card && event.target.matches('[data-status]')) { D.updateApplication(card.dataset.application, { status: event.target.value }); drawApplications(); UI.notify(tr('Đã cập nhật trạng thái hồ sơ.', 'Application status updated.')); } });
+  $('#applications-list').addEventListener('input', event => { const card = event.target.closest('[data-application]'); if (card && event.target.matches('.application-note')) D.updateApplication(card.dataset.application, { reviewNote: event.target.value }); });
+  window.addEventListener('storage', () => { drawApplications(); });
+  fillJobs(); drawApplications();
+});
+</script></body></html>

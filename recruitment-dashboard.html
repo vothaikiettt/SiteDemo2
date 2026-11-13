@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mạch Việc – Bảng điều khiển tuyển dụng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,500..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F5F8; --surface:#FFFFFF; --ink:#0F1B2D; --navy:#0B1F3A;
+  --cobalt:#3355FF; --teal:#14A89A; --amber:#F2A20C; --rose:#E04B55;
+  --muted:#5B6B80; --line:#DCE2EA; --soft:#E9EDF3;
+  --body:'Be Vietnam Pro','Segoe UI',system-ui,sans-serif;
+  --display:'Bricolage Grotesque','Be Vietnam Pro','Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 14.5px/1.55 var(--body);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px}
+
+/* ---------- khung ---------- */
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;background:var(--surface);border-right:1px solid var(--line);padding:26px 18px;display:flex;flex-direction:column;gap:30px}
+.brand{display:flex;align-items:center;gap:10px;font:700 21px/1 var(--display);letter-spacing:-.01em}
+.brand svg{flex:none}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav a{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:var(--muted);text-decoration:none;font-weight:500}
+.nav a:hover{background:var(--paper);color:var(--ink)}
+.nav a[aria-current="page"]{background:#E6EBFF;color:#1B2F9E}
+.nav svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.me{margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:18px;border-top:1px solid var(--line)}
+.role-switch{display:grid;gap:2px;margin-top:auto;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--paper);text-decoration:none;color:var(--ink)}.role-switch strong{font-size:12px}.role-switch span{font-size:11px;color:var(--muted)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:600}
+.me b{display:block;font-weight:600;line-height:1.2}
+.me span{font-size:12.5px;color:var(--muted)}
+
+main{min-width:0;padding:30px 40px 56px}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:28px}
+.top h1{margin:0;font:700 31px/1.15 var(--display);letter-spacing:-.02em}
+.top p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 12px;font-weight:500}
+.btn{border:1px solid transparent;background:var(--cobalt);color:#fff;border-radius:8px;padding:9px 16px;font-weight:600;cursor:pointer}
+.btn:hover{background:#2644E0}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:var(--paper)}
+
+/* ---------- chỉ số chính ---------- */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kpi{padding:18px 22px 18px;border-left:1px solid var(--line)}
+.kpi:first-child{border-left:0;padding-left:0}
+.kpi dt{color:var(--muted);font-weight:500;font-size:13.5px}
+.kpi dd{margin:0}
+.kpi .num{display:block;font:700 36px/1.1 var(--display);letter-spacing:-.02em;margin:4px 0 2px}
+.kpi .num small{font:500 15px var(--body);color:var(--muted);letter-spacing:0;margin-left:4px}
+.kpi .note{font-size:12.5px;font-weight:500}
+.note.good{color:#0B7F73}.note.bad{color:#B4232E}.note.warn{color:#9A6200}
+
+/* ---------- dòng chảy ứng viên ---------- */
+.river{margin:36px -40px 0;background:var(--navy);color:#fff;padding:34px 40px 26px}
+.river-head{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-end;margin-bottom:6px}
+.river h2{margin:0;font:700 28px/1.2 var(--display);letter-spacing:-.015em}
+.river p{margin:4px 0 0;color:rgba(255,255,255,.66);font-size:13.5px}
+.river .key{max-width:34ch;text-align:right}
+.river-scroll{overflow-x:auto}
+.river-wrap{min-width:760px;animation:reveal 1.7s cubic-bezier(.2,.7,.2,1) .15s both}
+@keyframes reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.river svg{display:block;width:100%;height:auto}
+.rv-name{font:500 13px var(--body);fill:rgba(255,255,255,.72)}
+.rv-val{font:700 32px var(--display);fill:#fff}
+.rv-conv{font:500 12.5px var(--body);fill:rgba(255,255,255,.62)}
+
+/* ---------- khối nội dung ---------- */
+.block{margin-top:44px}
+.row{display:grid;gap:48px;align-items:start}
+.r-trend{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr)}
+.r-cal{grid-template-columns:minmax(0,2.3fr) minmax(0,1fr)}
+.r-jobs{grid-template-columns:minmax(0,2.3fr) minmax(0,1fr)}
+.block h2{margin:0;font:600 20px/1.25 var(--display);letter-spacing:-.01em}
+.sub{margin:3px 0 16px;color:var(--muted);font-size:13.5px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin:0 0 10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+
+/* biểu đồ xu hướng */
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto;touch-action:pan-y}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:#fff;border-radius:8px;padding:8px 11px;font-size:12.5px;line-height:1.45;white-space:nowrap;transform:translate(-50%,-100%);opacity:0;transition:opacity .12s}
+.tip b{display:block;font-weight:600;margin-bottom:2px}
+.tip span{display:flex;align-items:center;gap:6px}
+.tip i{width:8px;height:8px;border-radius:50%}
+.ax{font:400 11.5px var(--body);fill:var(--muted)}
+
+/* nguồn ứng viên */
+.src{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.src li{display:grid;grid-template-columns:1fr auto;gap:4px 12px;align-items:baseline}
+.src .track{grid-column:1/-1;height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.src .fill{display:block;height:100%;background:var(--cobalt);border-radius:4px}
+.src li.top-src .fill{background:var(--teal)}
+.src .v{font-weight:600}.src .v small{font-weight:400;color:var(--muted);margin-left:6px}
+.insight{margin:18px 0 0;padding:12px 14px;border-left:3px solid var(--teal);background:#E3F5F2;font-size:13.5px;border-radius:0 8px 8px 0}
+
+/* lịch */
+.cal{border:1px solid var(--line);background:var(--surface);border-radius:10px;overflow:auto}
+.cal-inner{min-width:700px;--hh:52px}
+.cal-head,.cal-body{display:grid;grid-template-columns:54px repeat(6,minmax(0,1fr))}
+.cal-head{border-bottom:1px solid var(--line)}
+.dh{padding:10px 8px 9px;text-align:center;border-left:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.2}
+.dh b{display:inline-grid;place-items:center;min-width:30px;height:30px;margin-top:3px;border-radius:15px;font:600 16px var(--display);color:var(--ink)}
+.dh.today{color:var(--cobalt);font-weight:600}
+.dh.today b{background:var(--cobalt);color:#fff}
+.gutter div{height:var(--hh);font-size:11.5px;color:var(--muted);text-align:right;padding:0 8px;transform:translateY(-8px)}
+.gutter div:first-child{transform:translateY(2px)}
+.dc{position:relative;height:calc(var(--hh)*10);border-left:1px solid var(--line);background-image:repeating-linear-gradient(to bottom,var(--soft) 0,var(--soft) 1px,transparent 1px,transparent var(--hh))}
+.dc.today{background-color:rgba(51,85,255,.045)}
+.ev{position:absolute;left:4px;right:4px;border:0;border-left:3px solid;border-radius:6px;padding:4px 7px;text-align:left;font-size:12px;line-height:1.3;cursor:pointer;overflow:hidden}
+.ev b{display:block;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.85}
+.ev.pv{background:#E6EBFF;border-color:var(--cobalt);color:#1B2F9E}
+.ev.test{background:#FDF0D3;border-color:var(--amber);color:#7A4E00}
+.ev.offer{background:#D9F3EF;border-color:var(--teal);color:#0B5E55}
+.ev.meet{background:#E9EDF3;border-color:#7B8BA1;color:#34455A}
+.ev.fair{background:#FBE4E6;border-color:var(--rose);color:#8E232C}
+.ev.past{opacity:.55}
+.ev[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px;opacity:1}
+
+.detail{border-top:2px solid var(--ink);padding-top:14px}
+.detail .tag{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:10px}
+.detail h3{margin:8px 0 2px;font:600 21px/1.25 var(--display);letter-spacing:-.01em}
+.detail .when{color:var(--muted);margin:0 0 12px}
+.detail dl{margin:0 0 14px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px}
+.detail dt{color:var(--muted)}.detail dd{margin:0}
+.detail .acts{display:flex;gap:8px;flex-wrap:wrap}
+.today-list{list-style:none;margin:26px 0 0;padding:0}
+.today-list h2{font-size:16px}
+.today-list li{margin:0}
+.today-list button{display:grid;grid-template-columns:56px 1fr;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:10px 4px;cursor:pointer}
+.today-list button:hover{background:var(--surface)}
+.today-list button[aria-pressed="true"]{background:var(--surface);box-shadow:inset 3px 0 0 var(--cobalt)}
+.today-list time{font-weight:600}
+.today-list small{display:block;color:var(--muted);font-size:12.5px}
+
+/* việc làm */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:18px;padding:5px 13px;font-size:13px;font-weight:500;cursor:pointer}
+.chip small{color:var(--muted);margin-left:5px;font-size:12px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip[aria-pressed="true"] small{color:rgba(255,255,255,.7)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{width:100%;min-width:780px;border-collapse:collapse}
+th{padding:11px 14px;text-align:left;font-weight:500;font-size:12.5px;color:var(--muted);border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:13px 14px;border-bottom:1px solid var(--soft);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+td .t{font-weight:600;display:block}
+td .m{font-size:12.5px;color:var(--muted);display:block}
+.stack{display:flex;height:7px;width:120px;border-radius:4px;overflow:hidden;margin-top:6px;background:var(--soft)}
+.stack i{display:block;height:100%}
+.st{display:inline-block;padding:2px 10px;border-radius:11px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.st.open{background:#D9F3EF;color:#0B5E55}.st.urgent{background:#FBE4E6;color:#8E232C}
+.st.closing{background:#FDF0D3;color:#7A4E00}.st.paused{background:var(--soft);color:#4A5A6E}
+.empty{padding:26px;text-align:center;color:var(--muted)}
+
+/* thời gian tuyển */
+.tth{list-style:none;margin:0;padding:0;display:grid;gap:13px}
+.tth li{display:grid;grid-template-columns:86px 1fr 62px;gap:10px;align-items:center;font-size:13.5px}
+.tth .rail{position:relative;height:6px;background:var(--soft);border-radius:3px}
+.tth .rail i{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.tth .goal{position:absolute;top:-6px;bottom:-6px;width:0;border-left:2px dashed var(--ink);opacity:.5}
+.tth .d{text-align:right;font-weight:600}
+.tth-note{font-size:12.5px;color:var(--muted);margin:12px 0 0}
+
+footer{margin-top:48px;color:var(--muted);font-size:12.5px}
+
+/* ---------- màn hình nhỏ ---------- */
+@media (max-width:1100px){
+  .r-trend,.r-cal,.r-jobs{grid-template-columns:minmax(0,1fr);gap:36px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi{border-left:0;padding-left:0;border-bottom:1px solid var(--line)}
+  .kpi:nth-child(even){padding-left:22px;border-left:1px solid var(--line)}
+}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:static;height:auto;flex-direction:row;align-items:center;gap:14px;padding:12px 16px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .nav{flex-direction:row}.nav a{white-space:nowrap}
+  .me{display:none}
+  main{padding:24px 16px 48px}
+  .river{margin-left:-16px;margin-right:-16px;padding:28px 16px 20px}
+  .river .key{text-align:left}
+}
+@media (max-width:520px){
+  .kpis{grid-template-columns:minmax(0,1fr)}
+  .kpi,.kpi:nth-child(even){border-left:0;padding-left:0}
+  .top h1{font-size:26px}
+}
+@media (prefers-reduced-motion:reduce){
+  .river-wrap{animation:none}
+  .tip{transition:none}
+}
+</style>
+</head>
+<body data-root="" data-page="overview">
+<div class="app">
+
+<aside class="side">
+  <div class="brand">
+    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="8" fill="#0B1F3A"/><path d="M5 17c4 0 4-6 8-6s4 6 10 6" fill="none" stroke="#6F8BFF" stroke-width="2.6" stroke-linecap="round"/><circle cx="23" cy="17" r="2.2" fill="#3CCB8E"/></svg>
+    Mạch Việc
+  </div>
+  <nav class="nav" aria-label="Điều hướng chính">
+    <a href="#" aria-current="page"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Tổng quan</a>
+    <a href="#viec-lam"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg>Việc làm</a>
+    <a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.4c2.2.7 3.5 2.6 3.5 5.6"/></svg>Ứng viên</a>
+    <a href="#lich"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Lịch phỏng vấn</a>
+    <a href="#"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Báo cáo</a>
+    <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>Cài đặt</a>
+  </nav>
+  <div class="me">
+    <div class="avatar" aria-hidden="true">L</div>
+    <div><b>Linh</b><span>Trưởng bộ phận nhân sự</span></div>
+  </div>
+</aside>
+
+<main>
+  <header class="top">
+    <div>
+      <h1>Chào buổi sáng, Linh</h1>
+      <p>Thứ Sáu, 6 tháng 11, 2026. Hôm nay bạn có 4 lịch hẹn và 3 offer sắp hết hạn trong 48 giờ tới.</p>
+    </div>
+    <div class="tools">
+      <span class="select" role="note">30 ngày gần nhất</span>
+      <a class="btn" href="employer/post-job.html">Đăng tin tuyển dụng</a>
+    </div>
+  </header>
+
+  <dl class="kpis" aria-label="Chỉ số tuyển dụng chính">
+    <div class="kpi"><dt>Hồ sơ mới trong 7 ngày</dt><dd><span class="num">161</span><span class="note bad">giảm 7% so với 7 ngày trước</span></dd></div>
+    <div class="kpi"><dt>Lịch phỏng vấn tuần này</dt><dd><span class="num">10</span><span class="note">7 đã xong, 3 sắp tới</span></dd></div>
+    <div class="kpi"><dt>Offer đang chờ phản hồi</dt><dd><span class="num">11</span><span class="note warn">3 offer hết hạn trong 48 giờ</span></dd></div>
+    <div class="kpi"><dt>Thời gian tuyển trung bình</dt><dd><span class="num">28<small>ngày</small></span><span class="note good">nhanh hơn 3 ngày so với quý trước</span></dd></div>
+    <div class="kpi"><dt>Tỷ lệ nhận offer</dt><dd><span class="num">78%</span><span class="note good">tăng 5 điểm phần trăm</span></dd></div>
+  </dl>
+
+  <section class="river" aria-labelledby="river-h">
+    <div class="river-head">
+      <div>
+        <h2 id="river-h">658 hồ sơ vào, 14 người nhận việc</h2>
+        <p>Hành trình ứng viên từ 8/10 đến 6/11. Bề rộng dải màu tỷ lệ với số người ở mỗi bước.</p>
+      </div>
+      <p class="key">Phần mờ phía trên và dưới dải sáng là những người rời quy trình ở bước đó.</p>
+    </div>
+    <div class="river-scroll"><div class="river-wrap" id="river"></div></div>
+  </section>
+
+  <section class="block">
+    <div class="row r-trend">
+      <div>
+        <h2>Hồ sơ nhận được mỗi ngày</h2>
+        <p class="sub">Số hồ sơ mới và số hồ sơ đã sàng lọc trong 30 ngày. Cuối tuần luôn thấp hơn.</p>
+        <p class="legend"><span><i style="background:#3355FF"></i>Hồ sơ nhận được</span><span><i style="background:#14A89A"></i>Đã sàng lọc</span><span><i style="background:#E9EDF3;border:1px solid #DCE2EA"></i>Thứ Bảy và Chủ nhật</span></p>
+        <div class="chart" id="trend"><div class="tip" id="trend-tip"></div></div>
+      </div>
+      <div>
+        <h2>Ứng viên đến từ đâu</h2>
+        <p class="sub">Tỷ lệ hồ sơ theo nguồn và số người đã nhận việc.</p>
+        <ul class="src" id="sources"></ul>
+        <p class="insight">Giới thiệu nội bộ chỉ chiếm 17% hồ sơ nhưng cho ra 6 trong 14 người nhận việc.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="lich">
+    <div class="row r-cal">
+      <div>
+        <h2>Lịch phỏng vấn tuần 2 đến 7 tháng 11</h2>
+        <p class="sub">Chọn một lịch hẹn để xem chi tiết.</p>
+        <p class="legend">
+          <span><i style="background:#3355FF"></i>Phỏng vấn</span>
+          <span><i style="background:#F2A20C"></i>Kiểm tra chuyên môn</span>
+          <span><i style="background:#14A89A"></i>Thông báo offer</span>
+          <span><i style="background:#7B8BA1"></i>Họp nội bộ</span>
+          <span><i style="background:#E04B55"></i>Sự kiện</span>
+        </p>
+        <div class="cal"><div class="cal-inner" id="cal"></div></div>
+      </div>
+      <div>
+        <div class="detail" id="detail" aria-live="polite"></div>
+        <div class="today-list">
+          <h2>Hôm nay</h2>
+          <ul style="list-style:none;margin:8px 0 0;padding:0" id="today-list"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="viec-lam">
+    <div class="row r-jobs">
+      <div>
+        <h2>Vị trí đang tuyển</h2>
+        <p class="sub">Tình trạng từng tin tuyển dụng và số ứng viên ở mỗi bước.</p>
+        <div class="chips" id="chips" role="group" aria-label="Lọc theo trạng thái"></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Vị trí</th><th>Mức lương</th><th>Ứng viên đang xử lý</th><th>Hạn nộp</th><th>Trạng thái</th></tr></thead>
+            <tbody id="jobs"></tbody>
+          </table>
+        </div>
+        <p class="legend" style="margin-top:10px"><span><i style="background:#C9D3FF"></i>Mới</span><span><i style="background:#93A8FF"></i>Sàng lọc</span><span><i style="background:#5C7BFF"></i>Phỏng vấn</span><span><i style="background:#1E3FD6"></i>Đã gửi offer</span></p>
+      </div>
+      <div>
+        <h2>Thời gian tuyển theo phòng ban</h2>
+        <p class="sub">Số ngày từ lúc đăng tin đến khi có người nhận việc.</p>
+        <ul class="tth" id="tth"></ul>
+        <p class="tth-note">Đường nét đứt là mục tiêu 30 ngày. Chấm đỏ là phòng ban đang vượt mục tiêu.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>Dữ liệu trong trang này là dữ liệu mẫu để minh họa giao diện.</footer>
+</main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const DAYS = ['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+
+/* ===== 1. Dòng chảy ứng viên ===== */
+(function(){
+  const stages=[
+    {n:'Ứng tuyển',v:658},{n:'Sàng lọc hồ sơ',v:316},{n:'Phỏng vấn vòng 1',v:148},
+    {n:'Phỏng vấn chuyên môn',v:62},{n:'Đề nghị làm việc',v:21},{n:'Nhận việc',v:14}
+  ];
+  const cols=['#6F8BFF','#4F7BFF','#2FA3E6','#19B5B0','#3CCB8E','#8BE06B'];
+  const W=1000,H=282,pad=28,nw=12,maxH=150,cy=150;
+  const step=(W-2*pad-nw)/(stages.length-1);
+  stages.forEach((s,i)=>{s.x=pad+i*step;s.h=Math.max(6,s.v/stages[0].v*maxH);});
+  const band=(x1,x2,ha,hb)=>{
+    const xm=(x1+x2)/2;
+    return `M${x1},${cy-ha/2} C${xm},${cy-ha/2} ${xm},${cy-hb/2} ${x2},${cy-hb/2} L${x2},${cy+hb/2} C${xm},${cy+hb/2} ${xm},${cy+ha/2} ${x1},${cy+ha/2}Z`;
+  };
+  let defs='',links='',nodes='',labels='';
+  for(let i=0;i<stages.length-1;i++){
+    const a=stages[i],b=stages[i+1],x1=a.x+nw,x2=b.x;
+    defs+=`<linearGradient id="rg${i}" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="${cols[i]}"/><stop offset="1" stop-color="${cols[i+1]}"/></linearGradient>`;
+    links+=`<path d="${band(x1,x2,a.h,b.h)}" fill="url(#rg${i})" opacity=".2"/>`;
+    links+=`<path d="${band(x1,x2,b.h,b.h)}" fill="url(#rg${i})" opacity=".9"/>`;
+  }
+  stages.forEach((s,i)=>{
+    const last=i===stages.length-1;
+    const ax=last?s.x+nw:s.x, an=last?'end':'start';
+    nodes+=`<rect x="${s.x}" y="${cy-s.h/2}" width="${nw}" height="${s.h}" rx="3" fill="${cols[i]}"/>`;
+    labels+=`<text class="rv-name" x="${ax}" y="30" text-anchor="${an}">${s.n}</text>`;
+    labels+=`<text class="rv-val" x="${ax}" y="66" text-anchor="${an}">${s.v}</text>`;
+    if(!last){
+      labels+=`<text class="rv-conv" x="${ax}" y="${cy+maxH/2+34}">${Math.round(stages[i+1].v/s.v*100)}% đi tiếp</text>`;
+    }
+  });
+  const desc=stages.map(s=>s.n+' '+s.v).join(', ');
+  $('#river').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dòng chảy ứng viên qua sáu bước: ${desc}"><defs>${defs}</defs>${links}${nodes}${labels}</svg>`;
+})();
+
+/* ===== 2. Biểu đồ hồ sơ mỗi ngày ===== */
+(function(){
+  const apps=[22,20,9,7,26,24,25,21,19,10,8,28,31,27,25,22,11,9,30,33,35,29,26,12,10,34,36,33,30,6];
+  const scr=apps.map((v,i)=>Math.round((i?apps[i-1]:apps[0])*0.48));
+  const W=640,H=270,l=34,r=10,t=12,b=30,max=40;
+  const n=apps.length, step=(W-l-r)/(n-1);
+  const x=i=>l+i*step, y=v=>t+(1-v/max)*(H-t-b);
+  const date=i=>new Date(2026,9,8+i);
+  const line=a=>a.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ đường số hồ sơ nhận được và đã sàng lọc mỗi ngày trong 30 ngày, từ 8 tháng 10 đến 6 tháng 11">`;
+  s+=`<defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3355FF" stop-opacity=".2"/><stop offset="1" stop-color="#3355FF" stop-opacity="0"/></linearGradient></defs>`;
+  for(let i=0;i<n;i++){
+    const d=date(i).getDay();
+    if(d===0||d===6) s+=`<rect x="${(x(i)-step/2).toFixed(1)}" y="${t}" width="${step.toFixed(1)}" height="${H-t-b}" fill="#E9EDF3" opacity=".8"/>`;
+  }
+  [0,10,20,30,40].forEach(v=>{
+    s+=`<line x1="${l}" x2="${W-r}" y1="${y(v)}" y2="${y(v)}" stroke="#DCE2EA"/>`;
+    s+=`<text class="ax" x="${l-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+  });
+  [0,7,14,21,29].forEach(i=>{
+    const d=date(i);
+    s+=`<text class="ax" x="${x(i)}" y="${H-8}" text-anchor="${i===29?'end':'middle'}">${d.getDate()}/${d.getMonth()+1}</text>`;
+  });
+  s+=`<path d="${line(apps)}L${x(n-1)},${y(0)}L${x(0)},${y(0)}Z" fill="url(#ar)"/>`;
+  s+=`<path d="${line(apps)}" fill="none" stroke="#3355FF" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s+=`<path d="${line(scr)}" fill="none" stroke="#14A89A" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  s+=`<circle cx="${x(n-1)}" cy="${y(apps[n-1])}" r="4" fill="#fff" stroke="#3355FF" stroke-width="2"/>`;
+  s+=`<g id="hv" style="display:none"><line id="hl" y1="${t}" y2="${H-b}" stroke="#0F1B2D" stroke-opacity=".35"/><circle id="hc1" r="4.5" fill="#3355FF" stroke="#fff" stroke-width="2"/><circle id="hc2" r="4" fill="#14A89A" stroke="#fff" stroke-width="2"/></g>`;
+  s+=`<rect id="ov" x="0" y="0" width="${W}" height="${H}" fill="transparent"/></svg>`;
+  const box=$('#trend');
+  box.insertAdjacentHTML('afterbegin',s);
+  const svg=box.querySelector('svg'), tip=$('#trend-tip'), hv=$('#hv'), hl=$('#hl'), c1=$('#hc1'), c2=$('#hc2');
+  function show(ev){
+    const rc=svg.getBoundingClientRect();
+    let i=Math.round(((ev.clientX-rc.left)/rc.width*W-l)/step);
+    i=Math.max(0,Math.min(n-1,i));
+    hl.setAttribute('x1',x(i));hl.setAttribute('x2',x(i));
+    c1.setAttribute('cx',x(i));c1.setAttribute('cy',y(apps[i]));
+    c2.setAttribute('cx',x(i));c2.setAttribute('cy',y(scr[i]));
+    hv.style.display='';
+    const d=date(i);
+    tip.innerHTML=`<b>${DAYS[d.getDay()]}, ${d.getDate()}/${d.getMonth()+1}${i===n-1?' (đang cập nhật)':''}</b><span><i style="background:#6F8BFF"></i>Hồ sơ nhận được: ${apps[i]}</span><span><i style="background:#3CCBBB"></i>Đã sàng lọc: ${scr[i]}</span>`;
+    const px=x(i)/W*rc.width;
+    tip.style.left=Math.max(80,Math.min(rc.width-80,px))+'px';
+    tip.style.top=(y(apps[i])/H*rc.height-12)+'px';
+    tip.style.opacity=1;
+  }
+  const ov=$('#ov');
+  ov.addEventListener('pointermove',show);
+  ov.addEventListener('pointerdown',show);
+  ov.addEventListener('pointerleave',()=>{hv.style.display='none';tip.style.opacity=0;});
+})();
+
+/* ===== 3. Nguồn ứng viên ===== */
+(function(){
+  const src=[['LinkedIn',224,4],['TopCV',184,2],['Giới thiệu nội bộ',112,6],['Website công ty',72,1],['Facebook và Zalo',46,1],['Khác',20,0]];
+  const total=658;
+  $('#sources').innerHTML=src.map(([n,c,h])=>{
+    const p=Math.round(c/total*100);
+    return `<li class="${n==='Giới thiệu nội bộ'?'top-src':''}"><span>${n}</span><span class="v">${p}%<small>${h} nhận việc</small></span><span class="track"><span class="fill" style="width:${(p/34*100).toFixed(1)}%"></span></span></li>`;
+  }).join('');
+})();
+
+/* ===== 4. Lịch phỏng vấn ===== */
+const EV=[
+  {id:1,d:0,s:9,e:10,t:'pv',who:'Nguyễn Thị Lan',job:'Product Designer',iv:'Trần Hà, Linh',pl:'Phòng họp Hồ Gươm, tầng 5'},
+  {id:2,d:0,s:14,e:15.5,t:'test',who:'Trần Quốc Bảo',job:'Senior Frontend Engineer',iv:'Phạm Quang Vinh',pl:'Trực tuyến qua Google Meet'},
+  {id:3,d:1,s:10,e:11,t:'pv',who:'Phạm Minh Đức',job:'Data Analyst',iv:'Lê Thu Trang, Linh',pl:'Trực tuyến qua Google Meet'},
+  {id:4,d:1,s:15,e:16,t:'meet',who:'Họp rà soát tuyển dụng quý IV',job:'Tất cả vị trí',iv:'Ban nhân sự và các trưởng phòng',pl:'Phòng họp Tây Hồ'},
+  {id:5,d:2,s:9.5,e:10.5,t:'pv',who:'Lê Hoàng Anh',job:'QA Engineer',iv:'Đinh Công Sơn, Linh',pl:'Trực tuyến, kết nối văn phòng Đà Nẵng'},
+  {id:6,d:2,s:11,e:12,t:'pv',who:'Vũ Thu Hà',job:'Account Executive (B2B)',iv:'Nguyễn Mạnh Cường',pl:'Trực tuyến qua Google Meet'},
+  {id:7,d:2,s:16,e:16.5,t:'offer',who:'Đỗ Khánh Linh',job:'Product Designer (UI/UX)',iv:'Linh',pl:'Gọi điện'},
+  {id:8,d:3,s:10,e:11,t:'pv',who:'Bùi Mai Phương',job:'Kế toán tổng hợp',iv:'Hoàng Thị Nga, Linh',pl:'Phòng họp Hồ Gươm, tầng 5'},
+  {id:9,d:3,s:14,e:15.5,t:'pv',who:'Ngô Thanh Tùng',job:'Senior Frontend Engineer, vòng 2',iv:'Phạm Quang Vinh, Trần Văn Hiếu',pl:'Phòng họp Tây Hồ'},
+  {id:10,d:4,s:9,e:10,t:'pv',who:'Hoàng Gia Huy',job:'Senior Frontend Engineer, vòng 1',iv:'Phạm Quang Vinh, Linh',pl:'Phòng họp Hồ Gươm, tầng 5'},
+  {id:11,d:4,s:10.5,e:11.5,t:'pv',who:'Đặng Ngọc Ánh',job:'Product Designer, vòng 2',iv:'Trần Hà, Giám đốc sản phẩm',pl:'Trực tuyến qua Google Meet'},
+  {id:12,d:4,s:14,e:15.5,t:'test',who:'Phan Văn Khải',job:'Data Analyst',iv:'Lê Thu Trang',pl:'Trực tuyến'},
+  {id:13,d:4,s:16,e:16.5,t:'offer',who:'Nguyễn Hải Yến',job:'Chuyên viên Tuyển dụng',iv:'Linh',pl:'Gọi điện'},
+  {id:14,d:5,s:9,e:10.5,t:'fair',who:'Ngày hội việc làm trực tuyến',job:'Nhiều vị trí',iv:'Nhóm nhân sự',pl:'Trực tuyến'}
+];
+const KIND={pv:'Phỏng vấn',test:'Kiểm tra chuyên môn',offer:'Thông báo offer',meet:'Họp nội bộ',fair:'Sự kiện'};
+const TAGC={pv:['#E6EBFF','#1B2F9E'],test:['#FDF0D3','#7A4E00'],offer:['#D9F3EF','#0B5E55'],meet:['#E9EDF3','#34455A'],fair:['#FBE4E6','#8E232C']};
+const TODAY=4, HH=52, START=8;
+const pad2=n=>String(n).padStart(2,'0');
+const hm=h=>pad2(Math.floor(h))+':'+(h%1?'30':'00');
+const dateOf=d=>new Date(2026,10,2+d);
+let sel=10;
+
+(function(){
+  let head='<div class="cal-head"><div></div>';
+  let cols='';
+  for(let d=0;d<6;d++){
+    const dt=dateOf(d);
+    head+=`<div class="dh${d===TODAY?' today':''}">${DAYS[dt.getDay()]}<br><b>${dt.getDate()}</b></div>`;
+    cols+=`<div class="dc${d===TODAY?' today':''}">`+EV.filter(e=>e.d===d).map(e=>{
+      const top=(e.s-START)*HH+1, h=(e.e-e.s)*HH-3;
+      return `<button type="button" class="ev ${e.t}${d<TODAY?' past':''}" data-id="${e.id}" aria-pressed="false" aria-label="${KIND[e.t]}: ${e.who}, ${hm(e.s)} đến ${hm(e.e)}" style="top:${top}px;height:${h}px"><b>${e.who}</b><span>${hm(e.s)}, ${e.job}</span></button>`;
+    }).join('')+'</div>';
+  }
+  head+='</div>';
+  let gut='<div class="gutter">';
+  for(let h=START;h<START+10;h++) gut+=`<div>${h}:00</div>`;
+  gut+='</div>';
+  $('#cal').innerHTML=head+`<div class="cal-body">${gut}${cols}</div>`;
+
+  $('#today-list').innerHTML=EV.filter(e=>e.d===TODAY).sort((a,b)=>a.s-b.s).map(e=>
+    `<li><button type="button" data-id="${e.id}" aria-pressed="false"><time>${hm(e.s)}</time><span><b>${e.who}</b><small>${KIND[e.t]}, ${e.job}</small></span></button></li>`
+  ).join('');
+})();
+
+function renderDetail(){
+  const e=EV.find(x=>x.id===sel), dt=dateOf(e.d), c=TAGC[e.t];
+  const person=e.t==='pv'||e.t==='test'||e.t==='offer';
+  const past=e.d<TODAY;
+  $('#detail').innerHTML=
+    `<span class="tag" style="background:${c[0]};color:${c[1]}">${KIND[e.t]}</span>`+
+    `<h3>${e.who}</h3>`+
+    `<p class="when">${DAYS[dt.getDay()]}, ${dt.getDate()}/${dt.getMonth()+1}, ${hm(e.s)} đến ${hm(e.e)}</p>`+
+    `<dl><dt>Vị trí</dt><dd>${e.job}</dd><dt>Người tham gia</dt><dd>${e.iv}</dd><dt>Địa điểm</dt><dd>${e.pl}</dd><dt>Trạng thái</dt><dd>${past?'Đã hoàn thành':'Sắp diễn ra'}</dd></dl>`+
+    `<div class="acts"><button class="btn" type="button">${person?'Mở hồ sơ ứng viên':'Xem chi tiết'}</button>${past?'':'<button class="btn ghost" type="button">Dời lịch</button>'}</div>`;
+  document.querySelectorAll('.ev,.today-list button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.id===sel)));
+}
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('.ev,.today-list button');
+  if(!b)return;
+  sel=+b.dataset.id;renderDetail();
+});
+renderDetail();
+
+/* ===== 5. Vị trí đang tuyển ===== */
+(function(){
+  const JOBS=[
+    {t:'Senior Frontend Engineer',d:'Kỹ thuật',loc:'Hà Nội, làm việc kết hợp',sal:'35–55 triệu',st:[18,12,10,2],due:'30/11',left:24,s:'open'},
+    {t:'Product Designer (UI/UX)',d:'Sản phẩm',loc:'Hà Nội',sal:'25–40 triệu',st:[24,16,15,3],due:'25/11',left:19,s:'open'},
+    {t:'Data Analyst',d:'Dữ liệu',loc:'TP. Hồ Chí Minh',sal:'20–32 triệu',st:[38,20,11,2],due:'20/11',left:14,s:'open'},
+    {t:'Chuyên viên Tuyển dụng',d:'Nhân sự',loc:'Hà Nội',sal:'15–22 triệu',st:[14,10,10,2],due:'12/11',left:6,s:'urgent'},
+    {t:'Account Executive (B2B)',d:'Kinh doanh',loc:'TP. Hồ Chí Minh',sal:'18–30 triệu và thưởng',st:[12,9,7,1],due:'30/11',left:24,s:'open'},
+    {t:'Content Marketing',d:'Marketing',loc:'Làm việc từ xa',sal:'14–20 triệu',st:[40,16,8,0],due:'15/12',left:39,s:'paused'},
+    {t:'QA Engineer',d:'Kỹ thuật',loc:'Đà Nẵng',sal:'18–28 triệu',st:[8,5,4,0],due:'05/12',left:29,s:'open'},
+    {t:'Kế toán tổng hợp',d:'Tài chính',loc:'Hà Nội',sal:'16–24 triệu',st:[10,7,5,1],due:'10/11',left:4,s:'closing'}
+  ];
+  const ST={open:'Đang tuyển',urgent:'Cần gấp',closing:'Sắp đóng',paused:'Tạm dừng'};
+  const SEG=['#C9D3FF','#93A8FF','#5C7BFF','#1E3FD6'], SEGN=['mới','sàng lọc','phỏng vấn','đã gửi offer'];
+  let filter='all';
+  const count=k=>k==='all'?JOBS.length:JOBS.filter(j=>j.s===k).length;
+  function draw(){
+    $('#chips').innerHTML=['all','open','urgent','closing','paused'].map(k=>
+      `<button type="button" class="chip" data-f="${k}" aria-pressed="${filter===k}">${k==='all'?'Tất cả':ST[k]}<small>${count(k)}</small></button>`
+    ).join('');
+    const list=JOBS.filter(j=>filter==='all'||j.s===filter);
+    $('#jobs').innerHTML=list.length?list.map(j=>{
+      const tot=j.st.reduce((a,b)=>a+b,0);
+      const segs=j.st.map((v,i)=>`<i style="width:${(v/tot*100).toFixed(1)}%;background:${SEG[i]}" title="${SEGN[i]}: ${v}"></i>`).join('');
+      const label=j.st.map((v,i)=>SEGN[i]+' '+v).join(', ');
+      return `<tr><td><span class="t">${j.t}</span><span class="m">${j.d}, ${j.loc}</span></td><td>${j.sal}</td><td><b>${tot}</b> hồ sơ<div class="stack" role="img" aria-label="${label}">${segs}</div></td><td>${j.due}<span class="m">${j.s==='paused'?'Đang tạm dừng':'Còn '+j.left+' ngày'}</span></td><td><span class="st ${j.s}">${ST[j.s]}</span></td></tr>`;
+    }).join(''):`<tr><td colspan="5" class="empty">Chưa có vị trí nào ở trạng thái này. Chọn "Tất cả" để xem toàn bộ.</td></tr>`;
+  }
+  $('#chips').addEventListener('click',ev=>{
+    const b=ev.target.closest('.chip'); if(!b)return;
+    filter=b.dataset.f; draw();
+    const again=$('#chips [data-f="'+filter+'"]'); if(again) again.focus();
+  });
+  draw();
+})();
+
+/* ===== 6. Thời gian tuyển theo phòng ban ===== */
+(function(){
+  const rows=[['Kỹ thuật',38],['Dữ liệu',34],['Sản phẩm',31],['Tài chính',27],['Marketing',25],['Kinh doanh',22],['Nhân sự',19]];
+  const MAX=45, GOAL=30;
+  $('#tth').innerHTML=rows.map(([n,v])=>
+    `<li><span>${n}</span><span class="rail"><span class="goal" style="left:${(GOAL/MAX*100).toFixed(2)}%"></span><i style="left:${(v/MAX*100).toFixed(2)}%;background:${v>GOAL?'#E04B55':'#14A89A'}"></i></span><span class="d">${v} ngày</span></li>`
+  ).join('');
+})();
+</script>
+<script src="assets/recruitment-store.js"></script>
+<script src="assets/recruitment-shell.js"></script>
+</body>
+</html>

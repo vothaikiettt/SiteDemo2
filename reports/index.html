@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Báo cáo tuyển dụng · Mạch Việc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/recruitment-shell.css">
+<script src="../assets/recruitment-store.js"></script><script defer src="../assets/recruitment-shell.js"></script>
+</head>
+<body data-root="../" data-page="report">
+<div class="app"><div id="sidebar-root"></div><main class="main">
+  <header class="page-head"><div><p class="eyebrow" data-vi="Phân tích nhân sự" data-en="Recruiting analytics">Phân tích nhân sự</p><h1 data-vi="Báo cáo tuyển dụng" data-en="Recruitment reports">Báo cáo tuyển dụng</h1><p data-vi="Số liệu được tổng hợp từ tin tuyển dụng và hồ sơ ứng viên trong hệ thống." data-en="Metrics are calculated from job posts and applications in this workspace.">Số liệu được tổng hợp từ tin tuyển dụng và hồ sơ ứng viên trong hệ thống.</p></div><div class="actions"><select id="period" class="form-control" style="width:auto"><option value="all" data-vi="Toàn thời gian" data-en="All time">Toàn thời gian</option><option value="30" data-vi="30 ngày gần đây" data-en="Last 30 days">30 ngày gần đây</option><option value="7" data-vi="7 ngày gần đây" data-en="Last 7 days">7 ngày gần đây</option></select></div></header>
+  <section class="grid kpi-grid" id="report-kpis"></section>
+  <div class="report-grid"><section class="card"><h2 data-vi="Tiến độ xử lý hồ sơ" data-en="Application pipeline">Tiến độ xử lý hồ sơ</h2><p class="sub" data-vi="Số hồ sơ đang ở mỗi bước tuyển dụng." data-en="Applications at each recruiting stage.">Số hồ sơ đang ở mỗi bước tuyển dụng.</p><div class="chart-bars" id="funnel"></div></section><section class="card"><h2 data-vi="Nguồn hồ sơ" data-en="Application sources">Nguồn hồ sơ</h2><p class="sub" data-vi="Số hồ sơ nhận được theo vị trí đăng tuyển." data-en="Applications received by job post.">Số hồ sơ nhận được theo vị trí đăng tuyển.</p><div class="list" id="job-breakdown"></div></section></div>
+  <section class="card" style="margin-top:16px"><h2 data-vi="Hoạt động gần đây" data-en="Recent activity">Hoạt động gần đây</h2><p class="sub" data-vi="Các vị trí có nhiều hồ sơ và số lượng ứng viên cần xem xét." data-en="Posts with the most applicants and those needing review.">Các vị trí có nhiều hồ sơ và số lượng ứng viên cần xem xét.</p><div class="table-wrap" style="border:0"><table style="min-width:560px"><thead><tr><th data-vi="Vị trí" data-en="Job">Vị trí</th><th data-vi="Tổng hồ sơ" data-en="Applications">Tổng hồ sơ</th><th data-vi="Đang chờ xem xét" data-en="Awaiting review">Đang chờ xem xét</th><th data-vi="Tỷ lệ qua sàng lọc" data-en="Shortlist rate">Tỷ lệ qua sàng lọc</th></tr></thead><tbody id="report-table"></tbody></table></div></section>
+  <footer data-vi="Báo cáo chỉ tính hồ sơ đã nộp cho các tin trong kho dữ liệu chung." data-en="Reports count applications submitted to posts in the shared workspace.">Báo cáo chỉ tính hồ sơ đã nộp cho các tin trong kho dữ liệu chung.</footer>
+</main></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const D = window.MachViec, UI = window.MachViecUI, $ = selector => document.querySelector(selector), tr = (vi, en) => D.getPrefs().language === 'en' ? en : vi;
+  const stages = [['new', 'Mới nhận', 'New'], ['reviewing', 'Đang xem xét', 'In review'], ['shortlisted', 'Qua sàng lọc', 'Shortlisted'], ['interview', 'Phỏng vấn', 'Interview'], ['accepted', 'Đã nhận', 'Accepted'], ['rejected', 'Không phù hợp', 'Declined']];
+  function draw() {
+    const jobs = D.getJobs(), apps = D.getApplications(), period = Number($('#period').value), since = period ? Date.now() - period * 86400000 : 0;
+    const filtered = apps.filter(app => new Date(app.appliedAt).getTime() >= since);
+    const waiting = filtered.filter(app => app.status === 'new' || app.status === 'reviewing').length;
+    const progressed = filtered.filter(app => ['shortlisted', 'interview', 'accepted'].includes(app.status)).length;
+    const ratio = filtered.length ? Math.round(progressed / filtered.length * 100) : 0;
+    $('#report-kpis').innerHTML = [[tr('Tin đang tuyển', 'Open jobs'), jobs.filter(j => j.status === 'open').length, tr('Vị trí nhận hồ sơ', 'Currently accepting')], [tr('Hồ sơ nhận được', 'Applications'), filtered.length, tr('Trong giai đoạn đã chọn', 'In selected period')], [tr('Cần xem xét', 'Needs review'), waiting, tr('Mới nhận hoặc đang xem xét', 'New or in review')], [tr('Qua sàng lọc trở đi', 'Shortlisted or later'), ratio + '%', tr(filtered.length + ' hồ sơ trong kỳ', filtered.length + ' applications in period')]].map(row => '<article class="kpi-card"><span>' + row[0] + '</span><strong>' + row[1] + '</strong><small>' + row[2] + '</small></article>').join('');
+    const max = Math.max(1, ...stages.map(([key]) => filtered.filter(app => app.status === key).length));
+    $('#funnel').innerHTML = stages.map(([key, vi, en]) => { const count = filtered.filter(app => app.status === key).length; return '<div class="bar-row"><span>' + tr(vi, en) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + (count / max * 100) + '%"></div></div><b>' + count + '</b></div>'; }).join('');
+    const ordered = jobs.map(job => ({ job, count: filtered.filter(app => String(app.jobId) === String(job.id)).length })).sort((a, b) => b.count - a.count);
+    $('#job-breakdown').innerHTML = ordered.length ? ordered.map(({ job, count }) => '<div class="list-row"><span>' + UI.escape(job.title) + '<small class="job-meta">' + UI.escape(job.department) + '</small></span><b>' + count + '</b></div>').join('') : '<p class="muted">' + tr('Chưa có tin tuyển dụng.', 'No job posts yet.') + '</p>';
+    $('#report-table').innerHTML = ordered.length ? ordered.map(({ job, count }) => { const list = filtered.filter(app => String(app.jobId) === String(job.id)); const need = list.filter(app => ['new', 'reviewing'].includes(app.status)).length; const passed = list.filter(app => ['shortlisted', 'interview', 'accepted'].includes(app.status)).length; return '<tr><td><span class="job-title">' + UI.escape(job.title) + '</span><span class="job-meta">' + UI.escape(job.department) + '</span></td><td>' + count + '</td><td>' + need + '</td><td>' + (count ? Math.round(passed / count * 100) : 0) + '%</td></tr>'; }).join('') : '<tr><td colspan="4" class="empty">' + tr('Chưa có dữ liệu trong khoảng thời gian này.', 'No data in this period.') + '</td></tr>';
+  }
+  $('#period').addEventListener('change', draw); window.addEventListener('storage', draw); draw();
+});
+</script></body></html>

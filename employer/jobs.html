@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tin tuyển dụng · Mạch Việc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/recruitment-shell.css">
+<script src="../assets/recruitment-store.js"></script><script defer src="../assets/recruitment-shell.js"></script>
+</head>
+<body data-root="../" data-page="jobs">
+<div class="app"><div id="sidebar-root"></div><main class="main">
+  <header class="page-head"><div><p class="eyebrow" data-vi="Không gian nhà tuyển dụng" data-en="Recruiter workspace">Không gian nhà tuyển dụng</p><h1 data-vi="Tin tuyển dụng" data-en="Job posts">Tin tuyển dụng</h1><p data-vi="Theo dõi hiệu quả từng tin, số hồ sơ nhận được và hạn nộp." data-en="Track each post, incoming applications, and closing dates.">Theo dõi hiệu quả từng tin, số hồ sơ nhận được và hạn nộp.</p></div><div class="actions"><a class="btn" href="post-job.html" data-vi="+ Đăng tin mới" data-en="+ Create a job post">+ Đăng tin mới</a></div></header>
+  <section class="grid kpi-grid" id="job-kpis" aria-label="Tổng hợp tin tuyển dụng"></section>
+  <div class="filters"><input id="search" type="search" data-placeholder-vi="Tìm theo vị trí hoặc phòng ban" data-placeholder-en="Search title or department" placeholder="Tìm theo vị trí hoặc phòng ban" aria-label="Tìm tin tuyển dụng"><select id="filter" aria-label="Lọc trạng thái"><option value="all" data-vi="Tất cả trạng thái" data-en="All statuses">Tất cả trạng thái</option><option value="open" data-vi="Đang tuyển" data-en="Open">Đang tuyển</option><option value="paused" data-vi="Tạm dừng" data-en="Paused">Tạm dừng</option><option value="draft" data-vi="Bản nháp" data-en="Draft">Bản nháp</option><option value="closed" data-vi="Đã đóng" data-en="Closed">Đã đóng</option></select><span class="muted" id="result-count" aria-live="polite"></span></div>
+  <div class="table-wrap"><table><thead><tr><th data-vi="Vị trí" data-en="Position">Vị trí</th><th data-vi="Phòng ban" data-en="Department">Phòng ban</th><th data-vi="Ứng viên" data-en="Applicants">Ứng viên</th><th data-vi="Hạn nộp" data-en="Deadline">Hạn nộp</th><th data-vi="Trạng thái" data-en="Status">Trạng thái</th><th data-vi="Thao tác" data-en="Actions">Thao tác</th></tr></thead><tbody id="jobs-table"></tbody></table><div id="empty" class="empty" hidden></div></div>
+  <footer data-vi="Thay đổi trạng thái được lưu và cập nhật ngay trong báo cáo." data-en="Status changes are saved and reflected in reports.">Thay đổi trạng thái được lưu và cập nhật ngay trong báo cáo.</footer>
+</main></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const D = window.MachViec, UI = window.MachViecUI;
+  const $ = selector => document.querySelector(selector), lang = () => D.getPrefs().language;
+  const tr = (vi, en) => lang() === 'en' ? en : vi;
+  const statusText = status => ({ open: tr('Đang tuyển', 'Open'), paused: tr('Tạm dừng', 'Paused'), draft: tr('Bản nháp', 'Draft'), closed: tr('Đã đóng', 'Closed') }[status] || status);
+  function draw() {
+    const jobs = D.getJobs(), applications = D.getApplications(), filter = $('#filter').value, query = $('#search').value.trim().toLocaleLowerCase();
+    const counts = { open: jobs.filter(j => j.status === 'open').length, paused: jobs.filter(j => j.status === 'paused').length, applicants: applications.length, review: applications.filter(a => a.status === 'new' || a.status === 'reviewing').length };
+    $('#job-kpis').innerHTML = [
+      [tr('Tin đang tuyển', 'Open jobs'), counts.open, tr('Đang nhận hồ sơ', 'Accepting applications')],
+      [tr('Đang tạm dừng', 'Paused'), counts.paused, tr('Có thể mở lại bất cứ lúc nào', 'Can be reopened at any time')],
+      [tr('Tổng hồ sơ đã nhận', 'Applications received'), counts.applicants, tr('Từ các tin tuyển dụng của bạn', 'Across your job posts')],
+      [tr('Chưa hoàn tất sàng lọc', 'Awaiting review'), counts.review, tr('Tiếp tục xử lý trong mục ứng viên', 'Continue in applications')]
+    ].map(row => '<article class="kpi-card"><span>' + row[0] + '</span><strong>' + row[1] + '</strong><small>' + row[2] + '</small></article>').join('');
+    const shown = jobs.filter(j => (filter === 'all' || j.status === filter) && (j.title + ' ' + j.department).toLocaleLowerCase().includes(query));
+    $('#result-count').textContent = tr('Hiển thị ', 'Showing ') + shown.length + tr(' tin', ' posts');
+    $('#empty').hidden = shown.length !== 0;
+    $('#empty').textContent = tr('Chưa có tin phù hợp. Hãy điều chỉnh bộ lọc hoặc tạo tin mới.', 'No matching posts. Adjust the filters or create a job post.');
+    $('#jobs-table').innerHTML = shown.map(job => {
+      const applicants = applications.filter(a => String(a.jobId) === String(job.id)).length;
+      const toggle = job.status === 'open' ? ['paused', tr('Tạm dừng', 'Pause')] : ['open', tr('Mở tin', 'Reopen')];
+      return '<tr><td><span class="job-title">' + UI.escape(job.title) + '</span><span class="job-meta">' + UI.escape(job.location) + ' · ' + tr('Đăng ', 'Posted ') + UI.date(job.createdAt) + '</span></td><td>' + UI.escape(job.department) + '<span class="job-meta">' + UI.escape(job.type) + '</span></td><td><b>' + applicants + '</b><span class="job-meta">' + tr('hồ sơ', 'applicants') + '</span></td><td>' + UI.date(job.deadline) + '</td><td><span class="status ' + job.status + '">' + statusText(job.status) + '</span></td><td><div class="row-actions"><a class="text-link" href="post-job.html?id=' + encodeURIComponent(job.id) + '">' + tr('Sửa', 'Edit') + '</a><a class="text-link" href="candidates.html?job=' + encodeURIComponent(job.id) + '">' + tr('Hồ sơ', 'Review') + '</a>' + (['open', 'paused'].includes(job.status) ? '<button class="btn secondary small" data-toggle="' + UI.escape(job.id) + '" data-status="' + toggle[0] + '">' + toggle[1] + '</button>' : '') + '</div></td></tr>';
+    }).join('');
+  }
+  $('#search').addEventListener('input', draw); $('#filter').addEventListener('change', draw);
+  $('#jobs-table').addEventListener('click', event => { const button = event.target.closest('[data-toggle]'); if (!button) return; D.updateJob(button.dataset.toggle, { status: button.dataset.status }); draw(); UI.notify(tr('Đã cập nhật trạng thái tin.', 'Job status updated.')); });
+  window.addEventListener('storage', draw); draw();
+});
+</script></body></html>

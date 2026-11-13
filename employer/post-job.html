@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng tin tuyển dụng · Mạch Việc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/recruitment-shell.css">
+<script src="../assets/recruitment-store.js"></script><script defer src="../assets/recruitment-shell.js"></script>
+</head>
+<body data-root="../" data-page="jobs">
+<div class="app"><div id="sidebar-root"></div><main class="main">
+  <header class="page-head"><div><p class="eyebrow" data-vi="Tin tuyển dụng" data-en="Job posts">Tin tuyển dụng</p><h1 id="form-title" data-vi="Đăng tin tuyển dụng" data-en="Create a job post">Đăng tin tuyển dụng</h1><p data-vi="Cung cấp thông tin rõ ràng để ứng viên phù hợp có thể quyết định nhanh." data-en="Give candidates clear information so they can make an informed decision.">Cung cấp thông tin rõ ràng để ứng viên phù hợp có thể quyết định nhanh.</p></div><a class="btn secondary" href="jobs.html" data-vi="← Danh sách tin" data-en="← All job posts">← Danh sách tin</a></header>
+  <div class="notice" style="margin-bottom:16px" data-vi="Tin đã đăng sẽ hiển thị trong khu vực ứng viên. Mỗi hồ sơ ứng tuyển được liên kết với đúng vị trí để theo dõi và báo cáo." data-en="Published posts appear in the candidate area. Applications are linked to the correct position for review and reporting.">Tin đã đăng sẽ hiển thị trong khu vực ứng viên. Mỗi hồ sơ ứng tuyển được liên kết với đúng vị trí để theo dõi và báo cáo.</div>
+  <form class="card" id="job-form">
+    <div class="form-grid">
+      <div class="field full"><label for="title" data-vi="Tên vị trí *" data-en="Job title *">Tên vị trí *</label><input class="form-control" id="title" name="title" required maxlength="100" placeholder="Ví dụ: Chuyên viên phân tích dữ liệu" data-placeholder-vi="Ví dụ: Chuyên viên phân tích dữ liệu" data-placeholder-en="e.g. Data Analyst"><span class="hint" data-vi="Dùng tên gọi cụ thể, phổ biến trên thị trường." data-en="Use a clear title candidates commonly search for.">Dùng tên gọi cụ thể, phổ biến trên thị trường.</span></div>
+      <div class="field"><label for="department" data-vi="Phòng ban *" data-en="Department *">Phòng ban *</label><select class="form-control" id="department" name="department" required><option value="" data-vi="Chọn phòng ban" data-en="Select a department">Chọn phòng ban</option><option value="Kỹ thuật" data-vi="Kỹ thuật" data-en="Engineering">Kỹ thuật</option><option value="Sản phẩm" data-vi="Sản phẩm" data-en="Product">Sản phẩm</option><option value="Dữ liệu" data-vi="Dữ liệu" data-en="Data">Dữ liệu</option><option value="Kinh doanh" data-vi="Kinh doanh" data-en="Sales">Kinh doanh</option><option value="Marketing">Marketing</option><option value="Nhân sự" data-vi="Nhân sự" data-en="Human Resources">Nhân sự</option><option value="Tài chính" data-vi="Tài chính" data-en="Finance">Tài chính</option><option value="Vận hành" data-vi="Vận hành" data-en="Operations">Vận hành</option></select></div>
+      <div class="field"><label for="location" data-vi="Địa điểm làm việc *" data-en="Location *">Địa điểm làm việc *</label><select class="form-control" id="location" name="location" required><option value="" data-vi="Chọn địa điểm" data-en="Select a location">Chọn địa điểm</option><option value="Hà Nội">Hà Nội</option><option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option><option value="Đà Nẵng">Đà Nẵng</option><option value="Làm việc từ xa" data-vi="Làm việc từ xa" data-en="Remote">Làm việc từ xa</option><option value="Linh hoạt / kết hợp" data-vi="Linh hoạt / kết hợp" data-en="Hybrid">Linh hoạt / kết hợp</option></select></div>
+      <div class="field"><label for="type" data-vi="Hình thức làm việc *" data-en="Employment type *">Hình thức làm việc *</label><select class="form-control" id="type" name="type" required><option value="Toàn thời gian" data-vi="Toàn thời gian" data-en="Full time">Toàn thời gian</option><option value="Bán thời gian" data-vi="Bán thời gian" data-en="Part time">Bán thời gian</option><option value="Hợp đồng" data-vi="Hợp đồng" data-en="Contract">Hợp đồng</option><option value="Thực tập" data-vi="Thực tập" data-en="Internship">Thực tập</option></select></div>
+      <div class="field"><label for="level" data-vi="Cấp bậc *" data-en="Seniority *">Cấp bậc *</label><select class="form-control" id="level" name="level" required><option value="Mới tốt nghiệp" data-vi="Mới tốt nghiệp" data-en="Entry level">Mới tốt nghiệp</option><option value="Nhân viên" data-vi="Nhân viên" data-en="Individual contributor">Nhân viên</option><option value="Chuyên viên cao cấp" data-vi="Chuyên viên cao cấp" data-en="Senior specialist">Chuyên viên cao cấp</option><option value="Trưởng nhóm" data-vi="Trưởng nhóm" data-en="Team lead">Trưởng nhóm</option><option value="Quản lý" data-vi="Quản lý" data-en="Manager">Quản lý</option></select></div>
+      <div class="field"><label for="salaryMin" data-vi="Lương tối thiểu (triệu đồng/tháng) *" data-en="Minimum salary (VND million/month) *">Lương tối thiểu (triệu đồng/tháng) *</label><input class="form-control" id="salaryMin" name="salaryMin" type="number" min="0" max="1000" step="1" required></div>
+      <div class="field"><label for="salaryMax" data-vi="Lương tối đa (triệu đồng/tháng) *" data-en="Maximum salary (VND million/month) *">Lương tối đa (triệu đồng/tháng) *</label><input class="form-control" id="salaryMax" name="salaryMax" type="number" min="0" max="1000" step="1" required></div>
+      <div class="field"><label for="headcount" data-vi="Số lượng cần tuyển *" data-en="Number of openings *">Số lượng cần tuyển *</label><input class="form-control" id="headcount" name="headcount" type="number" min="1" max="500" value="1" required></div>
+      <div class="field"><label for="deadline" data-vi="Hạn nhận hồ sơ *" data-en="Application deadline *">Hạn nhận hồ sơ *</label><input class="form-control" id="deadline" name="deadline" type="date" required></div>
+      <div class="field full"><label for="description" data-vi="Mô tả công việc *" data-en="Job description *">Mô tả công việc *</label><textarea class="form-control" id="description" name="description" required maxlength="4000" placeholder="Mục tiêu vị trí, trách nhiệm chính, cách phối hợp..." data-placeholder-vi="Mục tiêu vị trí, trách nhiệm chính, cách phối hợp..." data-placeholder-en="Role purpose, key responsibilities, and collaboration..."></textarea></div>
+      <div class="field full"><label for="requirements" data-vi="Yêu cầu ứng viên *" data-en="Requirements *">Yêu cầu ứng viên *</label><textarea class="form-control" id="requirements" name="requirements" required maxlength="3000" placeholder="Kinh nghiệm, kỹ năng, bằng cấp hoặc chứng chỉ cần thiết..." data-placeholder-vi="Kinh nghiệm, kỹ năng, bằng cấp hoặc chứng chỉ cần thiết..." data-placeholder-en="Experience, skills, education, or required certifications..."></textarea></div>
+      <div class="field full"><label for="benefits" data-vi="Quyền lợi" data-en="Benefits">Quyền lợi</label><textarea class="form-control" id="benefits" name="benefits" maxlength="2000" placeholder="Lương thưởng, bảo hiểm, nghỉ phép, hỗ trợ phát triển..." data-placeholder-vi="Lương thưởng, bảo hiểm, nghỉ phép, hỗ trợ phát triển..." data-placeholder-en="Compensation, insurance, leave, and learning support..."></textarea></div>
+      <div class="field full"><label for="skills" data-vi="Kỹ năng / từ khóa" data-en="Skills / keywords">Kỹ năng / từ khóa</label><input class="form-control" id="skills" name="skills" placeholder="Phân tách bằng dấu phẩy, ví dụ: SQL, Power BI, Python" data-placeholder-vi="Phân tách bằng dấu phẩy, ví dụ: SQL, Power BI, Python" data-placeholder-en="Comma-separated, e.g. SQL, Power BI, Python"><span class="hint" data-vi="Các từ khóa này giúp ứng viên tìm tin và giúp hệ thống đề xuất CV phù hợp." data-en="These terms help candidates find the post and improve CV recommendations.">Các từ khóa này giúp ứng viên tìm tin và giúp hệ thống đề xuất CV phù hợp.</span></div>
+    </div>
+    <div class="form-footer"><span class="muted" data-vi="* Trường bắt buộc" data-en="* Required fields">* Trường bắt buộc</span><div class="actions"><button class="btn secondary" type="submit" name="action" value="draft" data-vi="Lưu bản nháp" data-en="Save draft">Lưu bản nháp</button><button class="btn" type="submit" name="action" value="publish" data-vi="Đăng tin" data-en="Publish job">Đăng tin</button></div></div>
+  </form>
+  <footer data-vi="Bạn có thể chỉnh sửa hoặc tạm dừng tin sau khi đăng." data-en="You can edit or pause a post after publishing.">Bạn có thể chỉnh sửa hoặc tạm dừng tin sau khi đăng.</footer>
+</main></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const D = window.MachViec, UI = window.MachViecUI, form = document.getElementById('job-form'), query = new URLSearchParams(location.search), id = query.get('id');
+  const tr = (vi, en) => D.getPrefs().language === 'en' ? en : vi;
+  const today = new Date(); today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  document.getElementById('deadline').min = today.toISOString().slice(0, 10);
+  const existing = id && D.getJobs().find(job => String(job.id) === id);
+  if (id && !existing) { UI.notify(tr('Không tìm thấy tin cần sửa.', 'The job post could not be found.')); }
+  if (existing) {
+    document.getElementById('form-title').textContent = tr('Chỉnh sửa tin tuyển dụng', 'Edit job post');
+    for (const key of ['title', 'department', 'location', 'type', 'level', 'salaryMin', 'salaryMax', 'headcount', 'deadline', 'description', 'requirements', 'benefits']) form.elements[key].value = existing[key] == null ? '' : existing[key];
+    form.elements.skills.value = (existing.skills || []).join(', ');
+  }
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const values = Object.fromEntries(new FormData(form).entries());
+    const min = Number(values.salaryMin), max = Number(values.salaryMax);
+    if (max < min) { form.elements.salaryMax.setCustomValidity(tr('Lương tối đa cần bằng hoặc cao hơn lương tối thiểu.', 'Maximum salary must be at least the minimum.')); form.elements.salaryMax.reportValidity(); form.elements.salaryMax.setCustomValidity(''); return; }
+    const deadline = new Date(values.deadline + 'T23:59:59');
+    if (deadline < new Date()) { form.elements.deadline.setCustomValidity(tr('Hạn nhận hồ sơ phải là hôm nay hoặc trong tương lai.', 'The deadline must be today or in the future.')); form.elements.deadline.reportValidity(); form.elements.deadline.setCustomValidity(''); return; }
+    const action = event.submitter && event.submitter.value === 'draft' ? 'draft' : 'publish';
+    try {
+      D.saveJob({ id: existing ? existing.id : undefined, title: values.title.trim(), department: values.department, location: values.location, type: values.type, level: values.level, salaryMin: min, salaryMax: max, headcount: Number(values.headcount), deadline: values.deadline, description: values.description.trim(), requirements: values.requirements.trim(), benefits: values.benefits.trim(), skills: values.skills.split(',').map(value => value.trim()).filter(Boolean), status: action === 'draft' ? 'draft' : 'open' });
+      location.href = 'jobs.html?saved=' + action;
+    } catch (error) { UI.notify(error.message); }
+  });
+});
+</script></body></html>

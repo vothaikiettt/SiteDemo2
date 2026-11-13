@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ViệcNhà – Tìm việc và ứng tuyển</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#edf2ef; --surface:#ffffff; --ink:#12302d; --muted:#5a706c; --line:#d3dfda;
+  --pine:#0f3d3a; --on-pine:#f4faf7; --sun:#f2b632; --on-sun:#2b2000; --soft:#e2eee9; --ok:#1d7a4e; --danger:#b3392f;
+  color-scheme: light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1b1a; --surface:#13282606; --surface:#132826; --ink:#e6f1ed; --muted:#9bb3ad; --line:#26413e;
+    --pine:#0f3d3a; --soft:#193632; --ok:#5fcf9b; --danger:#ff8f84; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{--bg:#0c1b1a;--surface:#132826;--ink:#e6f1ed;--muted:#9bb3ad;--line:#26413e;--soft:#193632;--ok:#5fcf9b;--danger:#ff8f84;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* Hero */
+.hero{background:var(--pine);color:var(--on-pine);padding:20px 0 44px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:40px}
+.logo{font-weight:800;font-size:1.25rem;letter-spacing:-.02em}
+.logo b{color:var(--sun)}
+.nav{display:flex;gap:6px;flex-wrap:wrap}
+.nav button{background:none;border:0;color:inherit;padding:8px 14px;border-radius:999px;cursor:pointer;font-weight:500}
+.nav button[aria-selected="true"]{background:var(--on-pine);color:var(--pine)}
+.nav button:hover:not([aria-selected="true"]){background:rgba(255,255,255,.12)}
+.role-toggle{color:var(--on-pine);text-decoration:none;padding:8px 14px;border:1px solid rgba(255,255,255,.3);border-radius:999px;font-weight:600;font-size:.9rem;white-space:nowrap}
+.role-toggle:hover{background:rgba(255,255,255,.12)}
+.nav .n{margin-left:4px;font-size:.8rem;background:var(--sun);color:var(--on-sun);padding:1px 7px;border-radius:999px}
+h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.08;letter-spacing:-.035em;font-weight:800;margin:0 0 12px;max-width:16ch}
+.lede{margin:0 0 28px;color:#c4dcd5;max-width:52ch}
+.search{display:grid;grid-template-columns:2fr 1.2fr 1.2fr auto;gap:8px;background:var(--surface);padding:8px;border-radius:14px;color:var(--ink)}
+.search label{display:flex;flex-direction:column;padding:6px 12px;border-radius:8px;font-size:.78rem;color:var(--muted)}
+.search label:focus-within{background:var(--soft)}
+.search input,.search select{border:0;background:none;font-size:1rem;padding:2px 0;outline:none;width:100%}
+.btn{background:var(--sun);color:var(--on-sun);border:0;border-radius:10px;padding:0 26px;font-weight:600;cursor:pointer;min-height:48px}
+.btn:hover{filter:brightness(1.06)}
+.btn.alt{background:var(--pine);color:var(--on-pine)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+.btn.sm{min-height:38px;padding:0 16px;font-size:.92rem}
+.btn[disabled]{opacity:.65;cursor:default}
+
+/* Layout */
+main{padding:28px 0 56px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.bar h2{margin:0;font-size:1.15rem}
+.bar select{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.grid{display:grid;grid-template-columns:230px minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+.filters{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;position:sticky;top:12px}
+.filters fieldset{border:0;padding:0;margin:0 0 18px}
+.filters legend{font-weight:600;margin-bottom:6px;padding:0}
+.filters label{display:flex;gap:8px;align-items:center;padding:3px 0;cursor:pointer;font-size:.95rem}
+.filters select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;padding:0}
+
+.list{display:flex;flex-direction:column;gap:10px}
+.job{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer}
+.job:hover{border-color:var(--pine)}
+.job[aria-current="true"]{border-color:var(--pine);box-shadow:inset 4px 0 0 var(--sun)}
+.job h3{margin:0 0 2px;font-size:1.05rem;line-height:1.3}
+.co{color:var(--muted);font-size:.92rem}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0;padding:0;list-style:none}
+.meta li{font-size:.82rem;background:var(--soft);padding:2px 10px;border-radius:6px}
+.meta .pay{background:var(--sun);color:var(--on-sun);font-weight:600}
+.age{font-size:.82rem;color:var(--muted);margin-top:8px}
+.empty{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:32px;text-align:center;color:var(--muted)}
+
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px;position:sticky;top:12px}
+.detail h2{margin:0;font-size:1.5rem;line-height:1.2;letter-spacing:-.02em}
+.detail h4{margin:20px 0 6px;font-size:1rem}
+.detail ul{margin:0;padding-left:20px}
+.detail li{margin:3px 0}
+.acts{display:flex;gap:8px;margin:18px 0 4px;flex-wrap:wrap}
+
+/* Applications */
+.apps{display:flex;flex-direction:column;gap:10px}
+.app{display:grid;grid-template-columns:1fr auto;gap:8px 16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.status{font-size:.85rem;font-weight:600;padding:3px 12px;border-radius:999px;background:var(--soft)}
+.status.ok{color:var(--ok)}
+.steps{grid-column:1/-1;display:flex;gap:6px;margin:4px 0 0;padding:0;list-style:none;font-size:.8rem;color:var(--muted)}
+.steps li{flex:1;border-top:4px solid var(--line);padding-top:4px}
+.steps li.on{border-color:var(--ok);color:var(--ink);font-weight:600}
+
+/* Interviews */
+.ivbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.next{background:var(--pine);color:var(--on-pine);border-radius:12px;padding:16px 20px;margin-bottom:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.iv{display:grid;grid-template-columns:76px 1fr;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.iv.past{opacity:.88}
+.day{text-align:center;background:var(--soft);border-radius:10px;padding:10px 4px;line-height:1.2;align-self:start}
+.day b{display:block;font-size:1.8rem}
+.day span{font-size:.78rem;color:var(--muted)}
+.ivh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.ivh h3{margin:0;font-size:1.05rem}
+.status.no{color:var(--danger)}
+.chk{border:0;padding:0;margin:12px 0 0}
+.chk legend{font-weight:600;padding:0;font-size:.92rem;margin-bottom:2px}
+.chk label{display:flex;gap:8px;align-items:center;cursor:pointer;font-size:.92rem;padding:2px 0}
+.rs{display:flex;flex-direction:column;gap:4px;font-size:.92rem;font-weight:500;margin-top:12px}
+.rs select{padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);max-width:220px}
+.iv textarea{width:100%;min-height:64px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-weight:400;resize:vertical}
+.warn{color:var(--danger);font-size:.88rem;font-weight:600;margin:8px 0 0}
+form.apply select{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-weight:400}
+@media (max-width:720px){.iv{grid-template-columns:1fr}.day{display:flex;gap:8px;align-items:baseline;justify-content:flex-start;padding:6px 12px}.day b{font-size:1.2rem}}
+
+/* Dialog */
+dialog{border:0;border-radius:16px;padding:0;width:min(520px,94vw);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(5,20,18,.6)}
+form.apply{padding:24px;display:flex;flex-direction:column;gap:14px}
+form.apply h2{margin:0;font-size:1.3rem}
+form.apply label{display:flex;flex-direction:column;gap:4px;font-weight:500;font-size:.92rem}
+form.apply input,form.apply textarea{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-weight:400}
+form.apply textarea{min-height:96px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.hint{font-weight:400;color:var(--muted);font-size:.82rem}
+.end{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:10px;z-index:9;display:none}
+.toast.show{display:block}
+footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:.9rem}
+
+@media (max-width:1020px){
+  .grid{grid-template-columns:210px minmax(0,1fr)}
+  .detail{position:static;grid-column:1/-1}
+}
+@media (max-width:720px){
+  .search{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .filters{position:static}
+  .row{grid-template-columns:1fr}
+  .top{margin-bottom:28px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .hero h1{animation:rise .6s ease-out both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <div class="logo">Việc<b>Nhà</b></div>
+      <nav class="nav" role="tablist" aria-label="Khu vực chính">
+        <button role="tab" id="t-jobs" aria-selected="true" data-tab="jobs">Việc làm</button>
+        <button role="tab" id="t-saved" aria-selected="false" data-tab="saved">Đã lưu<span class="n" id="cSaved">0</span></button>
+        <button role="tab" id="t-apps" aria-selected="false" data-tab="apps">Đơn ứng tuyển<span class="n" id="cApps">0</span></button>
+        <button role="tab" id="t-iv" aria-selected="false" data-tab="iv">Lịch phỏng vấn<span class="n" id="cIv">0</span></button>
+      </nav>
+      <a class="role-toggle" href="recruitment-dashboard.html">Khu vực nhà tuyển dụng ↗</a>
+    </div>
+    <h1>Tìm việc hợp với bạn, nộp đơn trong vài phút</h1>
+    <p class="lede">Lọc theo mức lương, cấp bậc và hình thức làm việc. Lưu lại tin ưng ý và theo dõi từng đơn đã nộp.</p>
+    <form class="search" id="searchForm" role="search">
+      <label>Vị trí hoặc kỹ năng<input id="q" type="search" placeholder="Ví dụ: kế toán, React, bán hàng"></label>
+      <label>Địa điểm
+        <select id="loc"><option value="">Tất cả địa điểm</option><option>Đà Nẵng</option><option>Hà Nội</option><option>TP. Hồ Chí Minh</option><option>Làm việc từ xa</option></select>
+      </label>
+      <label>Ngành nghề
+        <select id="cat"><option value="">Tất cả ngành</option><option>Công nghệ</option><option>Kinh doanh</option><option>Kế toán</option><option>Thiết kế</option><option>Nhân sự</option></select>
+      </label>
+      <button class="btn" type="submit">Tìm việc</button>
+    </form>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="v-jobs" aria-labelledby="t-jobs">
+    <div class="bar">
+      <h2 id="count" aria-live="polite"></h2>
+      <label>Sắp xếp
+        <select id="sort"><option value="new">Mới nhất</option><option value="pay">Lương cao nhất</option></select>
+      </label>
+    </div>
+    <div class="grid">
+      <aside class="filters" aria-label="Bộ lọc">
+        <fieldset><legend>Hình thức</legend>
+          <label><input type="checkbox" name="type" value="Toàn thời gian"> Toàn thời gian</label>
+          <label><input type="checkbox" name="type" value="Bán thời gian"> Bán thời gian</label>
+          <label><input type="checkbox" name="type" value="Thực tập"> Thực tập</label>
+          <label><input type="checkbox" name="type" value="Hợp đồng"> Hợp đồng</label>
+        </fieldset>
+        <fieldset><legend>Cấp bậc</legend>
+          <label><input type="checkbox" name="level" value="Mới tốt nghiệp"> Mới tốt nghiệp</label>
+          <label><input type="checkbox" name="level" value="Nhân viên"> Nhân viên</label>
+          <label><input type="checkbox" name="level" value="Trưởng nhóm"> Trưởng nhóm</label>
+        </fieldset>
+        <fieldset><legend>Lương tối thiểu</legend>
+          <select id="pay"><option value="0">Không giới hạn</option><option value="10">Từ 10 triệu</option><option value="20">Từ 20 triệu</option><option value="30">Từ 30 triệu</option></select>
+        </fieldset>
+        <button class="link" type="button" id="reset">Xóa bộ lọc</button>
+      </aside>
+      <div class="list" id="list"></div>
+      <article class="detail" id="detail" aria-live="polite"></article>
+    </div>
+  </section>
+
+  <section id="v-saved" hidden aria-labelledby="t-saved">
+    <div class="bar"><h2>Việc làm đã lưu</h2></div>
+    <div class="list" id="savedList"></div>
+  </section>
+
+  <section id="v-apps" hidden aria-labelledby="t-apps">
+    <div class="bar"><h2>Đơn ứng tuyển của bạn</h2></div>
+    <div class="apps" id="appList"></div>
+  </section>
+
+  <section id="v-iv" hidden aria-labelledby="t-iv">
+    <div class="bar">
+      <h2>Lịch phỏng vấn</h2>
+      <div class="ivbar">
+        <label>Hiển thị <select id="ivFilter"><option value="up">Sắp diễn ra</option><option value="done">Đã xong</option><option value="cancel">Đã hủy</option><option value="all">Tất cả</option></select></label>
+        <button class="btn sm alt" id="ivNew" type="button">Đặt lịch phỏng vấn</button>
+      </div>
+    </div>
+    <div id="ivNext"></div>
+    <div class="list" id="ivList"></div>
+  </section>
+</main>
+
+<footer><div class="wrap">ViệcNhà – giao diện mẫu, dữ liệu minh họa.</div></footer>
+
+<dialog id="dlg">
+  <form class="apply" id="applyForm" method="dialog">
+    <h2 id="dTitle">Ứng tuyển</h2>
+    <div class="row">
+      <label>Họ và tên<input name="name" required autocomplete="name"></label>
+      <label>Số điện thoại<input name="phone" type="tel" required autocomplete="tel"></label>
+    </div>
+    <label>Email<input name="email" type="email" required autocomplete="email"></label>
+    <label>CV của bạn <span class="hint">PDF hoặc Word, tối đa 5 MB</span>
+      <input name="cv" type="file" accept=".pdf,.doc,.docx" required></label>
+    <label>Thư giới thiệu <span class="hint">Không bắt buộc</span>
+      <textarea name="note" placeholder="Nói ngắn gọn vì sao bạn phù hợp với vị trí này"></textarea></label>
+    <div class="end">
+      <button type="button" class="btn ghost sm" id="cancel">Hủy</button>
+      <button type="submit" class="btn alt sm">Nộp đơn</button>
+    </div>
+  </form>
+</dialog>
+<dialog id="ivDlg">
+  <form class="apply" id="ivForm" method="dialog">
+    <h2 id="ivTitle">Đặt lịch phỏng vấn</h2>
+    <label>Đơn ứng tuyển<select name="jid" required></select></label>
+    <div class="row">
+      <label>Ngày<input name="date" type="date" required></label>
+      <label>Giờ<input name="time" type="time" required></label>
+    </div>
+    <label>Hình thức<select name="mode"><option value="online">Trực tuyến</option><option value="offline">Trực tiếp</option><option value="phone">Qua điện thoại</option></select></label>
+    <label>Link, địa điểm hoặc số điện thoại<input name="place" placeholder="Dán link họp hoặc nhập địa chỉ"></label>
+    <label>Người phỏng vấn <span class="hint">Không bắt buộc</span><input name="who" placeholder="Họ tên và chức vụ"></label>
+    <label>Ghi chú <span class="hint">Không bắt buộc</span><textarea name="note"></textarea></label>
+    <div class="end">
+      <button type="button" class="btn ghost sm" id="ivCancel">Đóng</button>
+      <button type="submit" class="btn alt sm">Lưu lịch</button>
+    </div>
+  </form>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="assets/recruitment-store.js"></script>
+<script>
+var JOBS=[
+ {id:1,t:"Nhân viên kế toán tổng hợp",c:"Công ty Cơ khí Hải Vân",l:"Đà Nẵng",cat:"Kế toán",ty:"Toàn thời gian",lv:"Nhân viên",min:12,max:16,d:1,tags:["Excel","Thuế","Báo cáo tài chính"],about:"Phụ trách sổ sách, kê khai thuế và lập báo cáo tài chính hằng tháng cho nhà máy 120 nhân sự.",req:["Tốt nghiệp Kế toán, Kiểm toán hoặc tương đương","Từ 2 năm kinh nghiệm kế toán tổng hợp","Thành thạo Excel và một phần mềm kế toán"],ben:["Thưởng tháng 13","Bảo hiểm đầy đủ","Xe đưa đón nhân viên"]},
+ {id:2,t:"Lập trình viên React",c:"Sóng Studio",l:"Làm việc từ xa",cat:"Công nghệ",ty:"Toàn thời gian",lv:"Nhân viên",min:25,max:40,d:2,tags:["React","TypeScript","REST API"],about:"Xây dựng giao diện cho ứng dụng đặt lịch dành cho spa và phòng tập, làm việc cùng 3 lập trình viên khác.",req:["Từ 2 năm kinh nghiệm với React","Hiểu về hiệu năng và khả năng truy cập","Đọc hiểu tài liệu tiếng Anh"],ben:["Làm việc từ xa hoàn toàn","Ngân sách học tập 10 triệu mỗi năm","Giờ làm linh hoạt"]},
+ {id:3,t:"Thực tập sinh thiết kế đồ họa",c:"Cà Phê Muối Agency",l:"Đà Nẵng",cat:"Thiết kế",ty:"Thực tập",lv:"Mới tốt nghiệp",min:4,max:6,d:3,tags:["Figma","Photoshop"],about:"Hỗ trợ đội thiết kế làm ấn phẩm mạng xã hội và bao bì cho khách hàng ngành đồ uống.",req:["Sinh viên năm cuối hoặc mới tốt nghiệp","Có portfolio hoặc bài tập cá nhân","Chịu khó học hỏi"],ben:["Hướng dẫn trực tiếp bởi art director","Cơ hội nhận việc chính thức","Phụ cấp ăn trưa"]},
+ {id:4,t:"Chuyên viên kinh doanh B2B",c:"Tân Á Logistics",l:"TP. Hồ Chí Minh",cat:"Kinh doanh",ty:"Toàn thời gian",lv:"Nhân viên",min:15,max:35,d:4,tags:["Bán hàng","Đàm phán","CRM"],about:"Tìm kiếm và chăm sóc khách hàng doanh nghiệp xuất nhập khẩu, đạt chỉ tiêu doanh số theo quý.",req:["Từ 1 năm kinh nghiệm bán hàng B2B","Kỹ năng giao tiếp và thuyết trình tốt","Sẵn sàng đi gặp khách hàng"],ben:["Lương cứng cộng hoa hồng","Thưởng quý","Laptop và điện thoại công ty"]},
+ {id:5,t:"Trưởng nhóm tuyển dụng",c:"Bình Minh Retail",l:"Hà Nội",cat:"Nhân sự",ty:"Toàn thời gian",lv:"Trưởng nhóm",min:30,max:45,d:6,tags:["Tuyển dụng","Quản lý nhóm","Employer branding"],about:"Dẫn dắt nhóm 4 người, tuyển 200 vị trí cửa hàng và văn phòng mỗi năm.",req:["Từ 5 năm kinh nghiệm tuyển dụng, 1 năm quản lý","Quen với tuyển số lượng lớn","Kỹ năng phân tích số liệu tuyển dụng"],ben:["Thưởng theo hiệu quả","Bảo hiểm sức khỏe mở rộng","12 ngày phép mỗi năm"]},
+ {id:6,t:"Nhân viên chăm sóc khách hàng (ca tối)",c:"Giao Nhanh 247",l:"Làm việc từ xa",cat:"Kinh doanh",ty:"Bán thời gian",lv:"Mới tốt nghiệp",min:7,max:10,d:1,tags:["Giao tiếp","Hỗ trợ qua chat"],about:"Trả lời khách hàng qua chat và điện thoại từ 18:00 đến 22:00, hướng dẫn xử lý đơn hàng.",req:["Giọng nói dễ nghe, đánh máy nhanh","Có máy tính và kết nối mạng ổn định","Không yêu cầu kinh nghiệm"],ben:["Đào tạo 3 ngày có lương","Thưởng chuyên cần","Chọn ca linh hoạt"]}
+];
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var saved={}, apps=[], cur=1, applying=null;
+var STEPS=["Đã nộp","Nhà tuyển dụng đã xem","Phỏng vấn","Kết quả"];
+
+function pay(j){return j.min+" – "+j.max+" triệu"}
+function age(d){return d===1?"Đăng hôm qua":"Đăng "+d+" ngày trước"}
+function vals(n){return $$('input[name="'+n+'"]:checked').map(function(e){return e.value})}
+function filtered(){
+  var q=$("#q").value.trim().toLowerCase(), loc=$("#loc").value, cat=$("#cat").value;
+  var ty=vals("type"), lv=vals("level"), mp=+$("#pay").value;
+  var r=JOBS.filter(function(j){
+    var hay=(j.t+" "+j.c+" "+j.tags.join(" ")).toLowerCase();
+    return (!q||hay.indexOf(q)>-1)&&(!loc||j.l===loc)&&(!cat||j.cat===cat)&&(!ty.length||ty.indexOf(j.ty)>-1)&&(!lv.length||lv.indexOf(j.lv)>-1)&&j.max>=mp;
+  });
+  r.sort($("#sort").value==="pay"?function(a,b){return b.max-a.max}:function(a,b){return a.d-b.d});
+  return r;
+}
+function card(j,cur){
+  return '<button class="job" data-id="'+j.id+'"'+(cur===j.id?' aria-current="true"':'')+'><h3>'+j.t+'</h3><div class="co">'+j.c+'</div>'+
+  '<ul class="meta"><li class="pay">'+pay(j)+'</li><li>'+j.l+'</li><li>'+j.ty+'</li></ul><div class="age">'+age(j.d)+(applied(j.id)?' · Đã ứng tuyển':'')+'</div></button>';
+}
+function applied(id){return apps.some(function(a){return a.id===id})}
+function render(){
+  var r=filtered();
+  $("#count").textContent=r.length+" việc làm phù hợp";
+  if(r.length&&!r.some(function(j){return j.id===cur}))cur=r[0].id;
+  $("#list").innerHTML=r.length?r.map(function(j){return card(j,cur)}).join(""):'<div class="empty">Chưa có việc làm khớp bộ lọc. Hãy bỏ bớt điều kiện hoặc đổi từ khóa.</div>';
+  var j=JOBS.filter(function(x){return x.id===cur})[0];
+  $("#detail").hidden=!r.length;
+  if(r.length)$("#detail").innerHTML=detail(j);
+  $("#cSaved").textContent=Object.keys(saved).length;
+  $("#cApps").textContent=apps.length;
+  renderIv();
+  var s=JOBS.filter(function(x){return saved[x.id]});
+  $("#savedList").innerHTML=s.length?s.map(function(x){return card(x,0)}).join(""):'<div class="empty">Bạn chưa lưu việc nào. Chọn "Lưu việc" ở trang chi tiết để xem lại sau.</div>';
+  $("#appList").innerHTML=apps.length?apps.map(appRow).join(""):'<div class="empty">Bạn chưa nộp đơn nào. Mở một việc làm và chọn "Ứng tuyển ngay".</div>';
+}
+function detail(j){
+  var done=applied(j.id);
+  return '<h2>'+j.t+'</h2><div class="co">'+j.c+' · '+j.l+'</div>'+
+  '<ul class="meta"><li class="pay">'+pay(j)+'</li><li>'+j.ty+'</li><li>'+j.lv+'</li></ul>'+
+  '<div class="acts"><button class="btn sm alt" data-apply="'+j.id+'"'+(done?' disabled':'')+'>'+(done?'Đã ứng tuyển':'Ứng tuyển ngay')+'</button>'+
+  '<button class="btn sm ghost" data-save="'+j.id+'" aria-pressed="'+(!!saved[j.id])+'">'+(saved[j.id]?'Bỏ lưu':'Lưu việc')+'</button></div>'+
+  '<h4>Mô tả công việc</h4><p>'+j.about+'</p><h4>Yêu cầu</h4><ul>'+j.req.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul>'+
+  '<h4>Quyền lợi</h4><ul>'+j.ben.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul>'+
+  '<h4>Kỹ năng</h4><ul class="meta" style="padding:0">'+j.tags.map(function(x){return '<li>'+x+'</li>'}).join("")+'</ul>';
+}
+function appRow(a){
+  var j=JOBS.filter(function(x){return x.id===a.id})[0];
+  return '<div class="app"><div><strong>'+j.t+'</strong><div class="co">'+j.c+' · Nộp ngày '+a.date+'</div></div><span class="status ok">'+STEPS[a.step]+'</span>'+
+  '<ol class="steps">'+STEPS.map(function(s,i){return '<li class="'+(i<=a.step?'on':'')+'">'+s+'</li>'}).join("")+'</ol></div>';
+}
+function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove("show")},2600)}
+function tab(n){
+  ["jobs","saved","apps","iv"].forEach(function(k){
+    $("#v-"+k).hidden=k!==n; $("#t-"+k).setAttribute("aria-selected",k===n);
+  });
+}
+
+$$("[data-tab]").forEach(function(b){b.onclick=function(){tab(b.dataset.tab)}});
+document.addEventListener("click",function(e){
+  var c=e.target.closest(".job");
+  if(c){cur=+c.dataset.id;tab("jobs");render();$("#detail").scrollIntoView({block:"nearest",behavior:"smooth"});return}
+  var s=e.target.closest("[data-save]");
+  if(s){var id=+s.dataset.save; if(saved[id]){delete saved[id];toast("Đã bỏ lưu")}else{saved[id]=1;toast("Đã lưu việc làm")} render();return}
+  var a=e.target.closest("[data-apply]");
+  if(a){applying=+a.dataset.apply;var j=JOBS.filter(function(x){return x.id===applying})[0];$("#dTitle").textContent="Ứng tuyển: "+j.t;$("#dlg").showModal()}
+});
+["#q","#loc","#cat","#pay","#sort"].forEach(function(s){$(s).addEventListener("input",render)});
+$$('input[type=checkbox]').forEach(function(c){c.addEventListener("change",render)});
+$("#searchForm").addEventListener("submit",function(e){e.preventDefault();tab("jobs");render();$("#count").scrollIntoView({behavior:"smooth"})});
+$("#reset").onclick=function(){$$('input[type=checkbox]').forEach(function(c){c.checked=false});$("#pay").value="0";$("#q").value="";$("#loc").value="";$("#cat").value="";render()};
+$("#cancel").onclick=function(){$("#dlg").close()};
+$("#applyForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var d=new Date();
+  apps.unshift({id:applying,step:0,date:d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getFullYear()});
+  $("#dlg").close();$("#applyForm").reset();render();toast("Đã nộp đơn. Theo dõi tại mục Đơn ứng tuyển");
+});
+/* ===== Quản lý phỏng vấn ===== */
+var IVS=[], ivId=1, ivEdit=null, ivF="up";
+var DOW=["Chủ nhật","Thứ hai","Thứ ba","Thứ tư","Thứ năm","Thứ sáu","Thứ bảy"];
+var PREP=["Đọc lại mô tả công việc","Chuẩn bị 3 câu hỏi cho nhà tuyển dụng","Ôn lại các dự án và thành tích đã làm","Kiểm tra link hoặc đường đi trước 1 ngày"];
+var MODE={online:"Trực tuyến",offline:"Trực tiếp",phone:"Qua điện thoại"};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function iso(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function dayOff(n){var d=new Date();d.setDate(d.getDate()+n);return iso(d)}
+function jobOf(id){return JOBS.filter(function(x){return x.id===id})[0]}
+function when(v){var p=v.date.split("-");return new Date(+p[0],p[1]-1,+p[2])}
+function left(v){var t=new Date();t.setHours(0,0,0,0);return Math.round((when(v)-t)/864e5)}
+function clash(o){return IVS.some(function(v){return v.id!==o.id&&v.status==="up"&&o.status==="up"&&v.date===o.date&&v.time===o.time})}
+function mkIv(o){o.id=ivId++;o.prep=PREP.map(function(t){return{t:t,d:false}});o.status=o.status||"up";o.result=o.result||"";o.note=o.note||"";IVS.push(o)}
+function syncApp(jid){
+  var a=apps.filter(function(x){return x.id===jid})[0]; if(!a)return;
+  var l=IVS.filter(function(v){return v.jid===jid&&v.status!=="cancel"});
+  if(l.some(function(v){return v.result==="pass"||v.result==="fail"}))a.step=3; else if(l.length)a.step=2;
+}
+function ivById(id){return IVS.filter(function(v){return v.id===id})[0]}
+function ivCard(v){
+  var j=jobOf(v.jid),d=when(v),n=left(v),dn=v.prep.filter(function(p){return p.d}).length;
+  var st={up:"Sắp diễn ra",done:"Đã xong",cancel:"Đã hủy"}[v.status];
+  var h='<article class="iv'+(v.status==="up"?'':' past')+'" data-id="'+v.id+'"><div class="day"><b>'+d.getDate()+'</b><span>Tháng '+(d.getMonth()+1)+'</span></div><div>'+
+  '<div class="ivh"><div><h3>'+j.t+'</h3><div class="co">'+j.c+'</div></div><span class="status'+(v.status==="done"?' ok':v.status==="cancel"?' no':'')+'">'+st+'</span></div>'+
+  '<ul class="meta"><li>'+DOW[d.getDay()]+', '+v.time+'</li><li>'+MODE[v.mode]+'</li>'+(v.who?'<li>'+esc(v.who)+'</li>':'')+'</ul>'+
+  '<p class="co" style="margin:8px 0 0">'+{online:"Link",offline:"Địa điểm",phone:"Số điện thoại"}[v.mode]+': '+esc(v.place||"Chưa cập nhật")+'</p>';
+  if(v.status==="up"&&n<0)h+='<p class="warn">Đã quá giờ hẹn. Hãy đánh dấu đã xong hoặc đổi lịch.</p>';
+  if(clash(v))h+='<p class="warn">Trùng giờ với một buổi phỏng vấn khác.</p>';
+  if(v.status==="up")h+='<fieldset class="chk"><legend>Chuẩn bị ('+dn+'/'+v.prep.length+')</legend>'+v.prep.map(function(p,i){return '<label><input type="checkbox" data-prep="'+i+'"'+(p.d?' checked':'')+'> '+p.t+'</label>'}).join("")+'</fieldset>';
+  if(v.status==="done")h+='<label class="rs">Kết quả<select data-result>'+[["wait","Chờ kết quả"],["pass","Đạt"],["fail","Chưa đạt"]].map(function(r){return '<option value="'+r[0]+'"'+(v.result===r[0]?' selected':'')+'>'+r[1]+'</option>'}).join("")+'</select></label>';
+  h+='<label class="rs">Ghi chú<textarea data-note placeholder="Câu hỏi đã gặp, điều cần nhớ, việc cần làm sau buổi phỏng vấn">'+esc(v.note)+'</textarea></label>';
+  h+='<div class="acts">'+(v.status==="up"?'<button class="btn sm alt" data-act="done">Đánh dấu đã xong</button><button class="btn sm ghost" data-act="edit">Đổi lịch</button><button class="btn sm ghost" data-act="cancel">Hủy lịch</button>':v.status==="cancel"?'<button class="btn sm ghost" data-act="edit">Đặt lại lịch</button>':'')+'</div></div></article>';
+  return h;
+}
+function renderIv(){
+  var up=IVS.filter(function(v){return v.status==="up"}).sort(function(a,b){return (a.date+a.time).localeCompare(b.date+b.time)});
+  $("#cIv").textContent=up.length;
+  var nx=up.filter(function(v){return left(v)>=0})[0];
+  if(nx){var n=left(nx);$("#ivNext").innerHTML='<div class="next"><div>Buổi phỏng vấn tiếp theo<br><strong>'+jobOf(nx.jid).t+' – '+jobOf(nx.jid).c+'</strong></div><div><strong>'+(n===0?"Hôm nay":n===1?"Ngày mai":"Còn "+n+" ngày")+'</strong>, lúc '+nx.time+'</div></div>'}else $("#ivNext").innerHTML="";
+  var l=IVS.filter(function(v){return ivF==="all"||v.status===ivF}).sort(function(a,b){var x=(a.date+a.time).localeCompare(b.date+b.time);return ivF==="up"?x:-x});
+  $("#ivList").innerHTML=l.length?l.map(ivCard).join(""):'<div class="empty">Chưa có buổi phỏng vấn nào trong mục này. Chọn "Đặt lịch phỏng vấn" khi nhà tuyển dụng mời bạn.</div>';
+}
+function openIv(v){
+  if(!apps.length){toast("Hãy nộp đơn ứng tuyển trước khi đặt lịch phỏng vấn");return}
+  var f=$("#ivForm"); ivEdit=v?v.id:null;
+  $("#ivTitle").textContent=v?"Đổi lịch phỏng vấn":"Đặt lịch phỏng vấn";
+  f.jid.innerHTML=apps.map(function(a){return '<option value="'+a.id+'">'+jobOf(a.id).t+' – '+jobOf(a.id).c+'</option>'}).join("");
+  f.date.min=v?"":dayOff(0);
+  f.jid.value=v?v.jid:apps[0].id; f.date.value=v?v.date:""; f.time.value=v?v.time:"";
+  f.mode.value=v?v.mode:"online"; f.place.value=v?v.place:""; f.who.value=v?v.who:""; f.note.value=v?v.note:"";
+  $("#ivDlg").showModal();
+}
+$("#ivNew").onclick=function(){openIv(null)};
+$("#ivCancel").onclick=function(){$("#ivDlg").close()};
+$("#ivFilter").addEventListener("input",function(e){ivF=e.target.value;renderIv()});
+$("#ivForm").addEventListener("submit",function(e){
+  e.preventDefault(); var f=e.target;
+  var o={jid:+f.jid.value,date:f.date.value,time:f.time.value,mode:f.mode.value,place:f.place.value.trim(),who:f.who.value.trim(),note:f.note.value.trim()};
+  if(ivEdit){var v=ivById(ivEdit);Object.assign(v,o);v.status="up";v.result="";toast("Đã đổi lịch phỏng vấn")}
+  else{mkIv(o);toast("Đã đặt lịch phỏng vấn")}
+  syncApp(o.jid); ivF="up"; $("#ivFilter").value="up";
+  $("#ivDlg").close(); tab("iv"); render();
+});
+$("#ivList").addEventListener("click",function(e){
+  var b=e.target.closest("[data-act]"); if(!b)return;
+  var v=ivById(+b.closest(".iv").dataset.id), a=b.dataset.act;
+  if(a==="edit")return openIv(v);
+  if(a==="done"){v.status="done";v.result="wait";toast("Đã đánh dấu hoàn thành. Hãy cập nhật kết quả khi có tin")}
+  if(a==="cancel"){v.status="cancel";toast("Đã hủy lịch phỏng vấn")}
+  syncApp(v.jid); render();
+});
+$("#ivList").addEventListener("change",function(e){
+  var c=e.target.closest(".iv"); if(!c)return; var v=ivById(+c.dataset.id), t=e.target;
+  if(t.hasAttribute("data-prep")){v.prep[+t.dataset.prep].d=t.checked;renderIv()}
+  if(t.hasAttribute("data-result")){v.result=t.value;syncApp(v.jid);render();toast("Đã cập nhật kết quả")}
+});
+$("#ivList").addEventListener("input",function(e){
+  if(e.target.hasAttribute("data-note"))ivById(+e.target.closest(".iv").dataset.id).note=e.target.value;
+});
+/* Dữ liệu mẫu */
+apps.push({id:1,step:2,date:"2/11/2026"},{id:4,step:2,date:"28/10/2026"});
+mkIv({jid:1,date:dayOff(3),time:"09:30",mode:"online",place:"https://meet.example.com/hai-van",who:"Chị Lan, Trưởng phòng Kế toán",note:"Hỏi về quy trình kê khai thuế theo quý."});
+mkIv({jid:4,date:dayOff(-4),time:"14:00",mode:"offline",place:"Tầng 5, 12 Nguyễn Văn Linh, TP. Hồ Chí Minh",who:"Anh Hùng, Giám đốc kinh doanh",status:"done",result:"wait"});
+render();
+</script>
+<script>
+(function(){
+  if(!window.MachViec)return;
+  var D=window.MachViec, shared=D.getJobs();
+  document.documentElement.dataset.theme=D.getPrefs().theme;
+  var switchLink=document.querySelector('.role-toggle');
+  if(switchLink&&D.getPrefs().language==="en")switchLink.textContent="Recruiter workspace ↗";
+  var publicJobs=shared.filter(function(j){return j.status==="open"});
+  publicJobs.forEach(function(j){
+    [["#cat",j.department],["#loc",j.location],["select[name='level']",j.level],["select[name='type']",j.type]].forEach(function(pair){
+      var select=document.querySelector(pair[0]);
+      if(select&&pair[1]&&!Array.prototype.some.call(select.options,function(option){return option.value===pair[1]})){select.add(new Option(pair[1],pair[1]));}
+    });
+  });
+  publicJobs.filter(function(j){return !JOBS.some(function(x){return String(x.id)===String(j.id)})}).forEach(function(j){
+    JOBS.push({id:Number(j.id),t:j.title,c:"Mạch Việc · "+j.department,l:j.location,cat:j.department,ty:j.type,lv:j.level,min:j.salaryMin,max:j.salaryMax,d:0,tags:j.skills||[],about:j.description,req:String(j.requirements||"").split(/[\n.]+/).filter(Boolean),ben:String(j.benefits||"").split(/[\n.]+/).filter(Boolean)});
+  });
+  D.getApplications().forEach(function(a){
+    var id=Number(a.jobId); if(!JOBS.some(function(j){return j.id===id})||apps.some(function(item){return item.id===id}))return;
+    var when=new Date(a.appliedAt),step={new:0,reviewing:1,shortlisted:1,interview:2,accepted:3,rejected:3}[a.status]||0;
+    apps.unshift({id:id,step:step,date:when.getDate()+"/"+(when.getMonth()+1)+"/"+when.getFullYear()});
+  });
+  document.addEventListener("submit",function(event){
+    if(event.target.id!=="applyForm")return;
+    var form=event.target, id=applying, job=shared.filter(function(item){return String(item.id)===String(id)})[0];
+    if(!job)return;
+    var file=form.elements.cv.files[0];
+    if(file&&file.size>5*1024*1024){event.preventDefault();event.stopImmediatePropagation();toast("CV không được vượt quá 5 MB.");return;}
+    var result=D.addApplication({jobId:id,name:form.elements.name.value.trim(),phone:form.elements.phone.value.trim(),email:form.elements.email.value.trim(),cvName:file?file.name:"",note:form.elements.note.value.trim()});
+    if(result&&result.duplicate){event.preventDefault();event.stopImmediatePropagation();toast("Bạn đã nộp hồ sơ cho vị trí này bằng email đó.");}
+  },true);
+  render();
+})();
+</script>
+</body>
+</html>

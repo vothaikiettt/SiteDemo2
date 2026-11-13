@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cài đặt · Mạch Việc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Bricolage+Grotesque:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/recruitment-shell.css">
+<script src="../assets/recruitment-store.js"></script><script defer src="../assets/recruitment-shell.js"></script>
+</head>
+<body data-root="../" data-page="settings">
+<div class="app"><div id="sidebar-root"></div><main class="main">
+  <header class="page-head"><div><p class="eyebrow" data-vi="Tùy chỉnh không gian" data-en="Workspace preferences">Tùy chỉnh không gian</p><h1 data-vi="Cài đặt" data-en="Settings">Cài đặt</h1><p data-vi="Tùy chỉnh giao diện và ngôn ngữ cho các trang nhà tuyển dụng." data-en="Choose the appearance and language for recruiter pages.">Tùy chỉnh giao diện và ngôn ngữ cho các trang nhà tuyển dụng.</p></div></header>
+  <div class="settings-grid"><section class="card"><h2 data-vi="Giao diện" data-en="Appearance">Giao diện</h2><p class="sub" data-vi="Chế độ được lưu trên trình duyệt và giữ nguyên khi chuyển trang." data-en="Your choice is saved in this browser and persists across pages.">Chế độ được lưu trên trình duyệt và giữ nguyên khi chuyển trang.</p><div class="setting-line"><div><strong data-vi="Chế độ sáng / tối" data-en="Light / dark mode">Chế độ sáng / tối</strong><small data-vi="Chọn cách hiển thị phù hợp với môi trường làm việc." data-en="Choose the appearance that works for your environment.">Chọn cách hiển thị phù hợp với môi trường làm việc.</small></div><select id="theme" aria-label="Chế độ màu"><option value="light" data-vi="Sáng" data-en="Light">Sáng</option><option value="dark" data-vi="Tối" data-en="Dark">Tối</option></select></div></section>
+  <section class="card"><h2 data-vi="Ngôn ngữ" data-en="Language">Ngôn ngữ</h2><p class="sub" data-vi="Áp dụng cho điều hướng, nhãn và nội dung giao diện có hỗ trợ." data-en="Applies to navigation, labels, and translated interface content.">Áp dụng cho điều hướng, nhãn và nội dung giao diện có hỗ trợ.</p><div class="setting-line"><div><strong data-vi="Ngôn ngữ giao diện" data-en="Interface language">Ngôn ngữ giao diện</strong><small data-vi="Có thể đổi lại bất cứ lúc nào." data-en="You can change this at any time.">Có thể đổi lại bất cứ lúc nào.</small></div><select id="language" aria-label="Ngôn ngữ"><option value="vi">Tiếng Việt</option><option value="en">English</option></select></div></section>
+  <section class="card"><h2 data-vi="Dữ liệu mẫu" data-en="Sample data">Dữ liệu mẫu</h2><p class="sub" data-vi="Tin tuyển dụng, hồ sơ đã nộp và trạng thái sàng lọc được chia sẻ giữa các trang trong cùng trình duyệt." data-en="Job posts, applications, and review statuses are shared between pages in this browser.">Tin tuyển dụng, hồ sơ đã nộp và trạng thái sàng lọc được chia sẻ giữa các trang trong cùng trình duyệt.</p><div class="notice" data-vi="Các trang HTML này lưu dữ liệu trên thiết bị hiện tại để minh họa luồng tuyển dụng. Chưa có dịch vụ máy chủ để chia sẻ dữ liệu giữa nhiều người dùng." data-en="These HTML pages store data on this device to demonstrate the recruiting flow. No server service is connected for sharing between users.">Các trang HTML này lưu dữ liệu trên thiết bị hiện tại để minh họa luồng tuyển dụng. Chưa có dịch vụ máy chủ để chia sẻ dữ liệu giữa nhiều người dùng.</div></section>
+  <section class="card"><h2 data-vi="Đi tới nhanh" data-en="Quick links">Đi tới nhanh</h2><p class="sub" data-vi="Tiếp tục làm việc với tin tuyển dụng và hồ sơ ứng viên." data-en="Continue working with job posts and candidate applications.">Tiếp tục làm việc với tin tuyển dụng và hồ sơ ứng viên.</p><div class="actions"><a class="btn secondary" href="../employer/jobs.html" data-vi="Tin tuyển dụng" data-en="Job posts">Tin tuyển dụng</a><a class="btn secondary" href="../employer/candidates.html" data-vi="Ứng viên" data-en="Candidates">Ứng viên</a></div></section></div>
+  <footer data-vi="Cài đặt giao diện được lưu riêng với dữ liệu tuyển dụng." data-en="Display preferences are stored separately from recruitment data.">Cài đặt giao diện được lưu riêng với dữ liệu tuyển dụng.</footer>
+</main></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const D = window.MachViec, UI = window.MachViecUI, theme = document.getElementById('theme'), language = document.getElementById('language');
+  const prefs = D.getPrefs(); theme.value = prefs.theme; language.value = prefs.language;
+  theme.addEventListener('change', () => { D.setPrefs({ theme: theme.value }); UI.applyTheme(); UI.notify(language.value === 'en' ? 'Theme updated.' : 'Đã cập nhật giao diện.'); });
+  language.addEventListener('change', () => { D.setPrefs({ language: language.value }); UI.refreshShell(); UI.translate(); document.title = language.value === 'en' ? 'Settings · Mạch Việc' : 'Cài đặt · Mạch Việc'; UI.notify(language.value === 'en' ? 'Language updated.' : 'Đã cập nhật ngôn ngữ.'); });
+});
+</script></body></html>
